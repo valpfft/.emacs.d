@@ -297,6 +297,18 @@
        (add-hook 'vc-dir-mode-hook 'turn-on-diff-hl-mode))
    #+END_SRC
 
+** Browser
+*** Internal one
+    #+BEGIN_SRC emacs-lisp
+      (setq eww-download-directory "~/Downloads")
+    #+END_SRC
+
+*** External one
+    #+BEGIN_SRC emacs-lisp
+      (setq browse-url-browser-function 'browse-url-generic
+            browse-url-generic-program "chromium")
+    #+END_SRC
+
 * =evil-mode=
 ** Use =evil=
    #+BEGIN_SRC emacs-lisp
