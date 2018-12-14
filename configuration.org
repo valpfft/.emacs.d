@@ -1,0 +1,6 @@
+#+TITLE: Emacs configuration
+
+* Sensible defaults
+  #+BEGIN_SRC emacs-lisp
+    (server-start)
+  #+END_SRC
