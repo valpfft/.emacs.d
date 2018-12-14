@@ -32,7 +32,8 @@
      (use-package auto-compile
        :config (auto-compile-on-load-mode))
      (setq load-prefer-newer t)
-   #+
+   #+END_SRC
+
 ** Ignore uninterested files with =ignoramus.el=
    #+BEGIN_SRC emacs-lisp
      (load-file "~/.emacs.d/resources/ignoramus/ignoramus.el")
