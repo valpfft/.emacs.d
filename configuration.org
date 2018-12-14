@@ -68,6 +68,11 @@
        (recentf-mode 1))
    #+END_SRC
 
+** Toggle frame maximized (avoid empty space on right side after start - gtk bug)
+   #+BEGIN_SRC emacs-lisp
+     (toggle-frame-maximized)
+   #+END_SRC
+
 * Personal information
   #+BEGIN_SRC emacs-lisp
     (setq user-full-name "Valiantsin Mikhaliuk"
@@ -368,3 +373,8 @@
      #+END_SRC
 
 * Utility functions
+* Programming
+** Default tab width
+   #+BEGIN_SRC emacs-lisp
+     (setq-default tab-width 2)
+   #+END_SRC
