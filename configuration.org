@@ -67,3 +67,9 @@
           calendar-location-name "Sopot, PL"
           calendar-week-start-day 1)
   #+END_SRC
+* User interface preferences
+  #+BEGIN_SRC emacs-lisp
+    (require 'saveplace)
+    (setq save-place-file  "~/.emacs.d/private/saveplace.el")
+    (setq-default save-place t)
+  #+END_SRC
