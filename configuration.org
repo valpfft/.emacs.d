@@ -87,6 +87,7 @@
        :ensure t
        :init
        (setq evil-want-integration nil)
+       (setq evil-want-keybinding nil)
        :config
        (evil-mode 1))
       #+END_SRC
@@ -97,3 +98,15 @@
        :config
        (global-evil-surround-mode 1))
    #+END_SRC
+** Do not expand abbrevs when hit escape or c-]
+   #+BEGIN_SRC emacs-lisp
+     (setq evil-want-abbrev-expand-on-insert-exit nil)
+   #+END_SRC
+** =evil-collection=
+   Adds evil bindings for a lot of modes
+   #+BEGIN_SRC emacs-lisp
+     (use-package evil-collection
+     :after evil
+     :ensure t
+     :config)
+     #+END_SRC
