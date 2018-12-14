@@ -254,6 +254,8 @@
    This either hides or renames a variety of modes using the package.
 
    #+BEGIN_SRC emacs-lisp
+     (use-package diminish
+       :init)
      (defmacro diminish-minor-mode (filename mode &optional abbrev)
        `(eval-after-load (symbol-name ,filename)
 	  '(diminish ,mode ,abbrev)))
