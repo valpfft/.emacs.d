@@ -1,6 +1,15 @@
 #+TITLE: Emacs configuration
 
-* Sensible defaults
-  #+BEGIN_SRC emacs-lisp
-    (server-start)
-  #+END_SRC
+* Defaults
+** Start server
+   #+BEGIN_SRC emacs-lisp
+     (server-start)
+   #+END_SRC
+
+** Load =sensible-defaults.el= for some basic settings
+   #+BEGIN_SRC emacs-lisp
+     (load-file "~/.emacs.d/resources/sensible-defaults.el/sensible-defaults.el")
+     (sensible-defaults/use-all-settings)
+     (sensible-defaults/use-all-keybindings)
+     (sensible-defaults/backup-to-temp-directory)
+   #+END_SRC
