@@ -5,6 +5,10 @@
    #+BEGIN_SRC emacs-lisp
      (server-start)
    #+END_SRC
+** Add resources to load path
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'load-path "~/.emacs.d/resources/")
+   #+END_SRC
 
 ** Load =sensible-defaults.el= for some basic settings
    #+BEGIN_SRC emacs-lisp
