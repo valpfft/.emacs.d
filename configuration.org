@@ -251,7 +251,7 @@
    #+END_SRC
 
 ** Hide certain modes from the mode-line
-   This either hides or renames a variety of modes using the package.
+   This either hides or renames a variety of modes using the =diminish= package.
 
    #+BEGIN_SRC emacs-lisp
      (use-package diminish
@@ -288,6 +288,15 @@
      (diminish-major-mode 'python-mode-hook "Py")
      (diminish-major-mode 'ruby-mode-hook "")
    #+END_SRC
+** Highlight uncommited changes using =diff-hl=
+   #+BEGIN_SRC emacs-lisp
+     (use-package diff-hl
+       :ensure t
+       :config
+       (add-hook 'prog-mode-hook 'turn-on-diff-hl-mode)
+       (add-hook 'vc-dir-mode-hook 'turn-on-diff-hl-mode))
+   #+END_SRC
+
 * =evil-mode=
 ** Use =evil=
    #+BEGIN_SRC emacs-lisp
