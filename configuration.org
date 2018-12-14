@@ -390,6 +390,18 @@
 	   (setq compilation-scroll-output t)
 	 #+END_SRC
 
+*** =Magit= (Emacs mode for interactions with or even More)
+		#+BEGIN_SRC emacs-lisp
+		  (use-package evil-magit)
+			(use-package magit
+			  :bind ("C-x g" . magit-status)
+				:config
+				(use-package evil-magit)
+				(setq magit-push-always-verify nil)
+				(add-hook 'git-commit-mode-hook 'turn-on-flyspell)
+				(add-hook 'with-editor-mode-hook 'evil-insert-state))
+		#+END_SRC
+
 ** CSS and SASS
 **** Indent 2 spaces
 
@@ -446,4 +458,48 @@
 					 (yas-minor-mode 1)
 					 (setq coffee-tab-width 2)
 					 (setq whitespace-action '(auto-cleanup)))))
+	 #+END_SRC
+
+	 After compiling coffee into js, I wan't to move to corresponding point in js file
+	 #+BEGIN_SRC emacs-lisp
+	   (setq coffee-args-compile '("-c" "--no-header" "-m"))
+		 (add-hook 'coffee-after-compile-hook 'sourcemap-goto-corresponding-point)
+	 #+END_SRC
+
+	 Remove file after this dance
+	 #+BEGIN_SRC emacs-lisp
+	   (defun nist/coffee-after-compile-hook (props)
+		   (sourcemap-goto-corresponding-point props)
+			 (delete-file (plist-get props :sourcemap)))
+		 (add-hook 'coffee-after-compile-hook 'nist/coffee-after-compile-hook)
+	 #+END_SRC
+** Lisps
+	 Install required packages
+
+	 #+BEGIN_SRC emacs-lisp
+		 (use-package paredit
+			 :ensure t)
+		 (use-package rainbow-delimiters
+			 :ensure t
+			 :init)
+	 #+END_SRC
+
+	 Add some hooks
+
+	 #+BEGIN_SRC emacs-lisp
+		 (setq lispy-mode-hooks
+					 '(emacs-lisp-mode-hook
+						 lisp-mode-hook
+						 scheme-mode-hook))
+		 (dolist (hook lispy-mode-hooks)
+			 (add-hook hook (lambda ()
+												(setq show-paren-style 'expression)
+												(paredit-mode)
+												(rainbow-delimiters-mode))))
+	 #+END_SRC
+
+	 Also use =eldoc-mode= in elisp buffers
+
+	 #+BEGIN_SRC emacs-lisp
+	   (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 	 #+END_SRC
