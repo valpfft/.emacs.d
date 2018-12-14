@@ -324,6 +324,16 @@
      (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
    #+END_SRC
 
+** Use =guru-mode= to escape ambiguous keystrokes
+   #+BEGIN_SRC emacs-lisp
+     (use-package guru-mode
+       :ensure t
+       :diminish
+       :config
+       (guru-global-mode 1)
+       (add-hook 'prog-mode-hook 'guru-mode))
+   #+END_SRC
+
 * =evil-mode=
 ** Use =evil=
    #+BEGIN_SRC emacs-lisp
