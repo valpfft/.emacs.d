@@ -13,3 +13,23 @@
      (sensible-defaults/use-all-keybindings)
      (sensible-defaults/backup-to-temp-directory)
    #+END_SRC
+
+** =use-package=
+   Use =use-package= for fasters load and simplier dependency management
+
+   #+BEGIN_SRC emacs-lisp
+     (unless (package-installed-p 'use-package)
+       (package-install 'use-package))
+     (setq use-package-verbose t)
+     (setq use-package-always-ensure t)
+
+     (require 'use-package)
+   #+END_SRC
+
+   Always precompile and use the newest version.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package auto-compile
+       :config (auto-compile-on-load-mode))
+     (setq load-prefer-newer t)
+   #+END_SRC
