@@ -309,6 +309,14 @@
             browse-url-generic-program "chromium")
     #+END_SRC
 
+** Add stripes to a dired buffer
+   #+BEGIN_SRC emacs-lisp
+     (use-package stripe-buffer
+       :ensure t
+       :config
+       (add-hook 'dired-mode-hook 'stripe-buffer-mode))
+   #+END_SRC
+
 * =evil-mode=
 ** Use =evil=
    #+BEGIN_SRC emacs-lisp
