@@ -177,6 +177,38 @@
      (global-prettify-symbols-mode +1)
    #+END_SRC
 
+** Theme
+   Setup transparency
+   #+BEGIN_SRC emacs-lisp
+     (defun transparency (value)
+       "Sets the transparency of the frame window. 0=transparent/100=opaque."
+       (interactive "nTransparency Value 0 - 100 opaque:")
+       (set-frame-parameter (selected-frame) 'alpha value))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package nord-theme
+       :ensure t
+       :defer t)
+   #+END_SRC
+
+   Apply theme
+   #+BEGIN_SRC emacs-lisp
+     (defun nist/apply-theme ()
+       "Apply the `nord' theme and make frames just slightly transparent."
+       (interactive)
+       (setq nord-comment-brightness 18)
+       (setq nord-region-highlight 'snowstorm)
+       (load-theme 'nord t)
+       (transparency 95))
+
+     (if (daemonp)
+	 (add-hook 'after-make-frame-functions
+		   (lambda (frame)
+		     (with-selected-frame frame (nist/apply-theme))))
+       (nist/apply-theme))
+   #+END_SRC
+
 * =evil-mode=
 ** User =evil=
    #+BEGIN_SRC emacs-lisp
