@@ -33,6 +33,13 @@
        :config (auto-compile-on-load-mode))
      (setq load-prefer-newer t)
    #+
+** Ignore uninterested files with =ignoramus.el=
+   #+BEGIN_SRC emacs-lisp
+     (load-file "~/.emacs.d/resources/ignoramus/ignoramus.el")
+     (use-package ignoramus
+       :config (ignoramus-setup))
+   #+END_SRC
+
 * Personal information
   #+BEGIN_SRC emacs-lisp
     (setq user-full-name "Valiantsin Mikhaliuk"
