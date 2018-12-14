@@ -155,13 +155,35 @@
       (nist/reset-font-size)
     #+END_SRC
 
+** Which-function
+   #+BEGIN_SRC emacs-lisp
+     (use-package which-func
+       :ensure
+       :init)
+   #+END_SRC
+
+** Disable window chrome
+   #+BEGIN_SRC emacs-lisp
+     (tool-bar-mode 0)
+     (menu-bar-mode 0)
+     (when window-system
+       (scroll-bar-mode -1))
+   #+END_SRC
+
+** Use fancy lambdas
+   Why not? ;)
+
+   #+BEGIN_SRC emacs-lisp
+     (global-prettify-symbols-mode +1)
+   #+END_SRC
+
 * =evil-mode=
 ** User =evil=
    #+BEGIN_SRC emacs-lisp
      (use-package evil
        :ensure t
        :init
-       (setq evil-want-integration nil)
+       (setq evil-want-integration t)
        (setq evil-want-keybinding nil)
        :config
        (evil-mode 1))
