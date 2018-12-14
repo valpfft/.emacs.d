@@ -316,6 +316,13 @@
        :config
        (add-hook 'dired-mode-hook 'stripe-buffer-mode))
    #+END_SRC
+** =smartparens=
+   #+BEGIN_SRC emacs-lisp
+     (use-package smartparens
+     :config
+     (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+     (evil-smartparens-mode))
+   #+END_SRC
 
 * =evil-mode=
 ** Use =evil=
