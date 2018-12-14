@@ -420,3 +420,14 @@
 			   :config
 				 (setq scss-compile-at-save nil))
 		 #+END_SRC
+* Haskell
+	Enable =haskell-doc-mode= (smart function signatures and smart indentation).
+
+	#+BEGIN_SRC emacs-lisp
+	  (setq exec-path (append exec-path (list "~/.cabal/bin")))
+		 (add-hook 'haskell-mode-hook
+							 (lambda ()
+								 (haskell-doc-mode)
+								 (turn-on-haskell-indent)
+								 (ghc-init)))
+	#+END_SRC
