@@ -5,14 +5,17 @@
    #+BEGIN_SRC emacs-lisp
      (server-start)
    #+END_SRC
+
 ** Add resources to load path
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'load-path "~/.emacs.d/resources/")
    #+END_SRC
+
 ** Search init file for bugs
    #+BEGIN_SRC emacs-lisp
      (use-package bug-hunter)
    #+END_SRC
+
 ** Load =sensible-defaults.el= for some basic settings
    #+BEGIN_SRC emacs-lisp
      (load-file "~/.emacs.d/resources/sensible-defaults.el/sensible-defaults.el")
@@ -74,12 +77,72 @@
           calendar-location-name "Sopot, PL"
           calendar-week-start-day 1)
   #+END_SRC
+
 * User interface preferences
-  #+BEGIN_SRC emacs-lisp
+** Show column numbers
+   #+BEGIN_SRC emacs-lisp
+     (setq column-number-mode t)
+   #+END_SRC
+
+** Disable large file warning (> 100MB)
+   #+BEGIN_SRC emacs-lisp
+     (setq large-file-warning-threshold 100000000)
+   #+END_SRC
+
+** Save cursor point
+   #+BEGIN_SRC emacs-lisp
     (require 'saveplace)
     (setq save-place-file  "~/.emacs.d/private/saveplace.el")
     (setq-default save-place t)
-  #+END_SRC
+   #+END_SRC
+
+** Fonts
+*** Set default font
+    #+BEGIN_SRC emacs-lisp
+      (setq nist/default-font "Iosevka")
+      (setq nist/default-font-size 15)
+      (setq nist/current-font-size nist/default-font-size)
+    #+END_SRC
+
+*** Handle resizing
+    #+BEGIN_SRC emacs-lisp
+      (setq nist/font-change-increment 1.1)
+
+      (defun nist/set-font-size ()
+	"Set the font to `nist/default-font` at `nist/current-font-size`."
+	(set-frame-font
+	 (concat nist/default-font "-" (number-to-string nist/current-font-size))))
+
+      (defun nist/reset-font-size ()
+	"Change font size back to `nist/default-font-size'."
+	(interactive)
+	(setq nist/current-font-size nist/default-font-size)
+	(nist/set-font-size))
+
+      (defun nist/increase-font-size ()
+	"Increase current font size by a factor of `nist/font-change-increment'."
+	(interactive)
+	(setq nist/current-font-size
+	      (ceiling (* nist/current-font-size nist/font-change-increment)))
+	(nist/set-font-size))
+
+      (defun nist/decrease-font-size ()
+	"Decrease current font size by a factor of `nist/font-change-increment', down to a minimum size of 1."
+	(interactive)
+	(setq nist/current-font-size
+	      (max 1
+		   (floor (/ nist/current-font-size nist/font-change-increment))))
+	(nist/set-font-size))
+
+      (define-key global-map (kbd "C-)") 'nist/reset-font-size)
+      (define-key global-map (kbd "C-+") 'nist/increase-font-size)
+      (define-key global-map (kbd "C-=") 'nist/increase-font-size)
+      (define-key global-map (kbd "C-_") 'nist/decrease-font-size)
+      (define-key global-map (kbd "C--") 'nist/decrease-font-size)
+
+      (nist/reset-font-size)
+    #+END_SRC
+
 * =evil-mode=
 ** User =evil=
    #+BEGIN_SRC emacs-lisp
@@ -110,3 +173,4 @@
      :ensure t
      :config)
      #+END_SRC
+* Utility functions
