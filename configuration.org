@@ -420,14 +420,30 @@
 			   :config
 				 (setq scss-compile-at-save nil))
 		 #+END_SRC
-* Haskell
+** Haskell
 	Enable =haskell-doc-mode= (smart function signatures and smart indentation).
 
 	#+BEGIN_SRC emacs-lisp
-	  (setq exec-path (append exec-path (list "~/.cabal/bin")))
-		 (add-hook 'haskell-mode-hook
-							 (lambda ()
-								 (haskell-doc-mode)
-								 (turn-on-haskell-indent)
-								 (ghc-init)))
-	#+END_SRC
+		(setq exec-path (append exec-path (list "~/.cabal/bin")))
+		(use-package haskell-mode
+			:ensure t
+			:config
+			(add-hook 'haskell-mode-hook
+								(lambda ()
+									(haskell-doc-mode)
+									(turn-on-haskell-indent)
+									)))
+	#+End_SRC
+
+** JavaScript (and CoffeeScript)
+	 #+BEGIN_SRC emacs-lisp
+			 (use-package coffee-mode
+				 :ensure t
+				 :init
+				 (setq js-indent-level 2)
+				 (add-hook 'coffee-mode-hook
+					 (lambda ()
+					 (yas-minor-mode 1)
+					 (setq coffee-tab-width 2)
+					 (setq whitespace-action '(auto-cleanup)))))
+	 #+END_SRC
