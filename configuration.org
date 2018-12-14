@@ -374,17 +374,49 @@
 
 * Utility functions
 * Programming
-** Default tab width
+** Common
+*** Default tab width
    #+BEGIN_SRC emacs-lisp
      (setq-default tab-width 2)
    #+END_SRC
 
-** CamelCase everywhere
+*** CamelCase everywhere
 	 #+BEGIN_SRC emacs-lisp
 	   (global-subword-mode 1)
 	 #+END_SRC
 
-** Scroll compilation window to bottom automatically
+*** Scroll compilation window to bottom automatically
 	 #+BEGIN_SRC emacs-lisp
 	   (setq compilation-scroll-output t)
 	 #+END_SRC
+
+** CSS and SASS
+**** Indent 2 spaces
+
+	 #+BEGIN_SRC emacs-lisp
+		 (add-hook 'css-mode-hook (lambda ()
+																(setq css-indent-offset 2)))
+		 (add-hook 'scss-mode-hook (lambda ()
+																(setq css-indent-offset 2)))
+
+	 #+END_SRC
+
+**** Use =rainbow-mode=
+		 #+BEGIN_SRC emacs-lisp
+		   (use-package rainbow-mode
+			 :ensure t)
+		 #+END_SRC
+
+**** Use =css-mode=
+
+	 #+BEGIN_SRC emacs-lisp
+	   (use-package css-mode
+		   :config
+			 (rainbow-mode))
+	 #+END_SRC
+**** Do not trigger compile on each save
+		 #+BEGIN_SRC emacs-lisp
+		   (use-package scss-mode
+			   :config
+				 (setq scss-compile-at-save nil))
+		 #+END_SRC
