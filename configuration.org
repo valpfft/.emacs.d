@@ -378,3 +378,13 @@
    #+BEGIN_SRC emacs-lisp
      (setq-default tab-width 2)
    #+END_SRC
+
+** CamelCase everywhere
+	 #+BEGIN_SRC emacs-lisp
+	   (global-subword-mode 1)
+	 #+END_SRC
+
+** Scroll compilation window to bottom automatically
+	 #+BEGIN_SRC emacs-lisp
+	   (setq compilation-scroll-output t)
+	 #+END_SRC
