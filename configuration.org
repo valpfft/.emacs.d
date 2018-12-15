@@ -404,17 +404,17 @@
 
 ** Projectile
    #+BEGIN_SRC emacs-lisp
-     (defun nist/search-project-for-symbol-at-point ()
-       "Use `projectile-ag' to search the current project for `symbol-at-point'."
-       (interactive)
-       (projectile-ag (projectile-symbol-at-point)))
+		 (defun nist/search-project-for-symbol-at-point ()
+			 "Use `projectile-ag' to search the current project for `symbol-at-point'."
+			 (interactive)
+			 (projectile-ag (projectile-symbol-at-point)))
 
 		 (use-package ag
-		   :ensure t)
+			 :ensure t)
 
 		 (use-package projectile
-		   :ensure t
-		   :bind-keymap ("C-c p" . projectile-command-map)
+			 :ensure t
+			 :bind-keymap ("C-c p" . projectile-command-map)
 			 :init
 			 (global-set-key (kbd "C-c v") 'projectile-ag)
 			 (global-set-key (kbd "C-c C-v") 'nist/search-project-for-symbol-at-point))
@@ -422,76 +422,81 @@
 
 ** CSS and SASS
 **** Indent 2 spaces
-
 	 #+BEGIN_SRC emacs-lisp
 		 (add-hook 'css-mode-hook (lambda ()
 																(setq css-indent-offset 2)))
 		 (add-hook 'scss-mode-hook (lambda ()
-																(setq css-indent-offset 2)))
+																 (setq css-indent-offset 2)))
 
 	 #+END_SRC
 
 **** Use =rainbow-mode=
 		 #+BEGIN_SRC emacs-lisp
-		   (use-package rainbow-mode
-			 :ensure t)
+			 (use-package rainbow-mode
+				 :ensure t)
 		 #+END_SRC
 
 **** Use =css-mode=
-
 	 #+BEGIN_SRC emacs-lisp
-	   (use-package css-mode
-		   :config
+		 (use-package css-mode
+			 :config
 			 (rainbow-mode))
 	 #+END_SRC
+
 **** Do not trigger compile on each save
 		 #+BEGIN_SRC emacs-lisp
-		   (use-package scss-mode
-			   :config
+			 (use-package scss-mode
+				 :config
 				 (setq scss-compile-at-save nil))
 		 #+END_SRC
-** Haskell
-	Enable =haskell-doc-mode= (smart function signatures and smart indentation).
 
-	#+BEGIN_SRC emacs-lisp
-		(setq exec-path (append exec-path (list "~/.cabal/bin")))
-		(use-package haskell-mode
-			:ensure t
-			:config
-			(add-hook 'haskell-mode-hook
-								(lambda ()
-									(haskell-doc-mode)
-									(turn-on-haskell-indent)
-									)))
-	#+End_SRC
+** Haskell
+
+	 Enable =haskell-doc-mode= (smart function signatures and smart indentation).
+
+	 #+BEGIN_SRC emacs-lisp
+		 (setq exec-path (append exec-path (list "~/.cabal/bin")))
+		 (use-package haskell-mode
+			 :ensure t
+			 :config
+			 (add-hook 'haskell-mode-hook
+								 (lambda ()
+									 (haskell-doc-mode)
+									 (turn-on-haskell-indent)
+									 )))
+	 #+End_SRC
 
 ** JavaScript (and CoffeeScript)
 	 #+BEGIN_SRC emacs-lisp
-			 (use-package coffee-mode
-				 :ensure t
-				 :init
-				 (setq js-indent-level 2)
-				 (add-hook 'coffee-mode-hook
-					 (lambda ()
-					 (yas-minor-mode 1)
-					 (setq coffee-tab-width 2)
-					 (setq whitespace-action '(auto-cleanup)))))
+		 (use-package coffee-mode
+			 :ensure t
+			 :init
+			 (setq js-indent-level 2)
+			 (add-hook 'coffee-mode-hook
+								 (lambda ()
+									 (yas-minor-mode 1)
+									 (setq coffee-tab-width 2)
+									 (setq whitespace-action '(auto-cleanup)))))
 	 #+END_SRC
 
 	 After compiling coffee into js, I wan't to move to corresponding point in js file
+
 	 #+BEGIN_SRC emacs-lisp
-	   (setq coffee-args-compile '("-c" "--no-header" "-m"))
+		 (setq coffee-args-compile '("-c" "--no-header" "-m"))
 		 (add-hook 'coffee-after-compile-hook 'sourcemap-goto-corresponding-point)
 	 #+END_SRC
 
 	 Remove file after this dance
+
 	 #+BEGIN_SRC emacs-lisp
-	   (defun nist/coffee-after-compile-hook (props)
-		   (sourcemap-goto-corresponding-point props)
+		 (defun nist/coffee-after-compile-hook (props)
+			 (sourcemap-goto-corresponding-point props)
 			 (delete-file (plist-get props :sourcemap)))
 		 (add-hook 'coffee-after-compile-hook 'nist/coffee-after-compile-hook)
 	 #+END_SRC
+
 ** Lisps
+
 	 Install required packages
 
 	 #+BEGIN_SRC emacs-lisp
@@ -519,5 +524,5 @@
 	 Also use =eldoc-mode= in elisp buffers
 
 	 #+BEGIN_SRC emacs-lisp
-	   (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+		 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 	 #+END_SRC
