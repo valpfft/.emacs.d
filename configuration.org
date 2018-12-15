@@ -1002,3 +1002,49 @@
      (add-to-list 'exec-path "~/code/gocode/bin")
      (add-hook 'before-save-hook 'gofmt-before-save)
    #+END_SRC
+* Terminal
+** =multi-term=
+  #+BEGIN_SRC emacs-lisp
+    (use-package multi-term
+      :defer t
+      :config
+      (progn
+        (use-package term
+          :config
+          (progn
+            (setq term-prompt-regexp ".*:.*>.*? "))))
+      (let ((zsh-bin (executable-find "zsh")))
+        (when zsh-bin
+          (setq multi-term-program zsh-bin)))
+      (evil-set-initial-state 'term-mode 'emacs)
+      (define-key term-raw-map (kbd "M-o") 'other-window)
+      (goto-address-mode))
+  #+END_SRC
+
+** Use =pop-shell= to quick commands
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package shell-pop
+      :bind ("C-c s" . shell-pop)
+      :config
+      (setq shell-pop-shell-type
+            (quote ("multi-term" "*multi-term*"
+                    (lambda nil (ansi-term shell-pop-term-shell)))))
+      (setq shell-pop-term-shell "/bin/zsh")
+      (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type))
+  #+END_SRC
+** SSH
+   #+BEGIN_SRC emacs-lisp
+     (defun ssh-to-host (x)
+       "Ask for host."
+       (interactive "sHost:")
+       (let* ((buffer-name (format "*SSH %s*" x))
+              (buffer (get-buffer buffer-name)))
+         (if buffer
+             (switch-to-buffer buffer)
+           (multi-term)
+           (term-send-string
+            (get-buffer-process (rename-buffer buffer-name))
+            (format "ssh -i ~/.ssh/deploy valiantsin_mikhaliuk@%s\r" x)))))
+     (global-set-key (kbd "M-s s") 'ssh-to-host)
+   #+END_SRC
