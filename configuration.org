@@ -832,3 +832,12 @@
         "\\Vagrantfile$"
         "\\Vagrantfile.local$")
     #+END_SRC
+*** Highlight coverage using SimpleCov
+    #+BEGIN_SRC emacs-lisp
+      (use-package coverage
+        :ensure t
+        :config
+        (eval-after-load 'evil-ex
+          '(evil-ex-define-cmd "cov[coverage]"
+                               'coverage-mode)))
+    #+END_SRC
