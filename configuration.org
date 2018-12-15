@@ -301,6 +301,7 @@
      (diminish-minor-mode 'which-key 'which-key-mode)
      (diminish-minor-mode 'focus-autosave-mode 'focus-autosave-mode)
      (diminish-minor-mode 'paredit 'paredit-mode " π")
+     (diminish-minor-mode 'undo-tree 'undo-tree-mode)
      (diminish-major-mode 'magit-mode " ")
      (diminish-major-mode 'emacs-lisp-mode-hook "el")
      (diminish-major-mode 'haskell-mode-hook "λ=")
@@ -308,6 +309,7 @@
      (diminish-major-mode 'python-mode-hook "Py")
      (diminish-major-mode 'ruby-mode-hook "")
    #+END_SRC
+
 ** Highlight uncommited changes using =diff-hl=
    #+BEGIN_SRC emacs-lisp
      (use-package diff-hl
@@ -389,6 +391,36 @@
      #+END_SRC
 
 * Utility functions
+** Add a list of patterns to associate files with modes
+
+   #+BEGIN_SRC emacs-lisp
+     (defun nist/add-auto-mode (mode &rest patterns)
+       "Add entries to `auto-mode-alist' to use `MODE' for all given `PATTERNS'"
+       (dolist (pattern patterns)
+         (add-to-list 'auto-mode-alist (cons pattern mode))))
+   #+END_SRC
+
+** Open last file in dired buffer
+   #+BEGIN_SRC emacs-lisp
+     (defun nist/visit-last-dired-file ()
+       "Open the last file in an open dired buffer."
+       (end-of-buffer)
+       (previous-line)
+       (dired-find-file))
+   #+END_SRC
+
+** Visit last migration :ruby/rails:
+   Relies on projectile
+
+   #+BEGIN_SRC emacs-lisp
+     (defun nist/visit-last-migration ()
+       "Open the last file in 'db/migrate/'."
+       (interactive)
+       (dired (expand-file-name "db/migrate" (projectile-project-root)))
+       (nist/visit-last-dired-file)
+       (kill-buffer "migrate"))
+   #+END_SRC
+
 * Programming
 ** Common
 *** Default tab width
@@ -767,4 +799,17 @@
                   (define-key evil-normal-state-local-map "%" 'evil-ruby-jump-item)
                   (define-key evil-motion-state-local-map "%" 'evil-ruby-jump-item)
                   (add-hook 'ruby-mode-hook 'ruby-refactor-mode-launch)))
+    #+END_SRC
+
+    Associate with a following files
+    #+BEGIN_SRC emacs-lisp
+      (nist/add-auto-mode
+        'ruby-mode
+        "\\Gemfile$"
+        "\\.rake$"
+        "\\.gemspec$"
+        "\\Guardfile$"
+        "\\Rakefile$"
+        "\\Vagrantfile$"
+        "\\Vagrantfile.local$")
     #+END_SRC
