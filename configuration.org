@@ -428,6 +428,7 @@
           (bind-key [remap completion-at-point] #'company-complete company-mode-map)
           (setq company-tooltip-align-annotations t
                 company-show-numbers t)
+          (push 'company-robe company-backends)
           (setq company-dabbrev-downcase nil))
         :diminish company-mode)
     #+END_SRC
