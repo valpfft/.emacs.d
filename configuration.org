@@ -717,7 +717,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package chruby
         :config
-        (chruby "2.5.1"))
+        (chruby "2.5.3"))
     #+END_SRC
 
 *** Eval into comments
@@ -759,11 +759,16 @@
         :ensure t)
     #+END_SRC
 
-*** Features
+*** Features (Cucumber)
     #+BEGIN_SRC emacs-lisp
       (use-package feature-mode
         :ensure t
-        :after ruby-mode)
+        :after ruby-mode
+        :bind ("C-c ." . feature-goto-step-definition)
+        :config
+        (add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
+        (setq feature-default-language "fi")
+        (setq feature-step-search-path "features/step_definitions/*_steps.rb"))
     #+END_SRC
 
 *** Rubocop
