@@ -339,6 +339,7 @@
 ** =smartparens=
    #+BEGIN_SRC emacs-lisp
      (use-package evil-smartparens
+     :diminish evil-smartparens-mode
      :config
      (evil-smartparens-mode)
      (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
@@ -450,6 +451,13 @@
 			 (global-set-key (kbd "C-c v") 'projectile-ag)
 			 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 			 (global-set-key (kbd "C-c C-v") 'nist/search-project-for-symbol-at-point))
+   #+END_SRC
+
+** Flycheck
+   #+BEGIN_SRC emacs-lisp
+     (use-package flycheck
+       :ensure t
+       :init (global-flycheck-mode))
    #+END_SRC
 
 ** CSS and SASS
@@ -690,12 +698,73 @@
       (require 'rcodetools)
     #+END_SRC
 
-    Install robe
+*** Robe
 
     #+BEGIN_SRC emacs-lisp
       (use-package robe
         :ensure t
         :bind ("C-M-." . robe-jump)
+        :diminish robe-mode
         :init
         (add-hook 'ruby-mode-hook 'robe-mode))
+    #+END_SRC
+
+*** RSpec
+    #+BEGIN_SRC emacs-lisp
+      (use-package rspec-mode
+        :diminish rspec-mode
+        :ensure t)
+    #+END_SRC
+
+*** Refactoring helpers
+    #+BEGIN_SRC emacs-lisp
+      (use-package ruby-refactor
+        :diminish ruby-refactor-mode
+        :hook (ruby-mode . ruby-refactor-mode))
+    #+END_SRC
+
+*** Override =%= to play nicely with ruby blocks
+    #+BEGIN_SRC emacs-lisp
+      (evil-define-motion evil-ruby-jump-item (count)
+        :jump t
+        :type inclusive
+        (cond ((string-match ruby-block-beg-re (current-word))
+               (ruby-end-of-block count))
+              ((string-match ruby-block-end-re (current-word))
+               (ruby-beginning-of-block count))
+              (t
+               (evil-jump-item count))))
+    #+END_SRC
+
+*** =yard-mode=
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package yard-mode
+        :diminish t
+        :ensure t)
+    #+END_SRC
+
+*** =ruby-mode=
+    Fit all together
+
+    #+BEGIN_SRC emacs-lisp
+      (add-hook 'ruby-mode-hook
+                (lambda ()
+                  (setq ruby-insert-encoding-magic-comment nil)
+                  (yas-minor-mode)
+                  (rspec-mode)
+                  (yard-mode)
+                  (flycheck-disable-checker 'ruby-rubylint)
+                  (evil-smartparens-mode)
+                  (smartparens-strict-mode)
+                  (inf-ruby-minor-mode)
+                  (subword-mode)
+                  (local-set-key "\r" 'newline-and-indent)
+                  (setq rspec-command-options "--color --order random")
+                  (define-key ruby-mode-map (kbd "C-c C-c") 'xmp)
+                  (define-key ruby-mode-map (kbd "C-c r a") 'rspec-verify)
+                  (define-key ruby-mode-map (kbd "C-c r r") 'rspec-verify-matching)
+                  (define-key evil-normal-state-local-map "%" 'evil-ruby-jump-item)
+                  (define-key evil-motion-state-local-map "%" 'evil-ruby-jump-item)
+                  (add-hook 'ruby-mode-hook 'ruby-refactor-mode-launch)))
     #+END_SRC
