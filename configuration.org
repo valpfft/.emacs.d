@@ -184,36 +184,50 @@
 
 ** Theme
    Setup transparency
+
    #+BEGIN_SRC emacs-lisp
-     (defun transparency (value)
+     (defun nist/apply-transparency (value)
        "Sets the transparency of the frame window. 0=transparent/100=opaque."
        (interactive "nTransparency Value 0 - 100 opaque:")
        (set-frame-parameter (selected-frame) 'alpha value))
    #+END_SRC
 
    Install theme
+
    #+BEGIN_SRC emacs-lisp
-     (use-package nord-theme
-       :ensure t
-       :defer t)
+		 (use-package doom-themes
+			 :ensure t
+			 :defer t
+			 :init
+			 (doom-themes-org-config))
    #+END_SRC
 
-   Apply theme
-   #+BEGIN_SRC emacs-lisp
-     (defun nist/apply-theme ()
-       "Apply the `nord' theme and make frames just slightly transparent."
-       (interactive)
-       (setq nord-comment-brightness 18)
-       (setq nord-region-highlight 'snowstorm)
-       (load-theme 'nord t)
-       (transparency 95))
+   Setup
 
-     (if (daemonp)
-	 (add-hook 'after-make-frame-functions
-		   (lambda (frame)
-		     (with-selected-frame frame (nist/apply-theme))))
-       (nist/apply-theme))
+   #+BEGIN_SRC emacs-lisp
+		 (defun nist/apply-nord-theme ()
+			 "Apply the `nord' theme and make frames just slightly transparent."
+			 (interactive)
+			 (setq nord-comment-brightness 18)
+			 (setq nord-region-highlight 'snowstorm)
+			 (load-theme 'doom-nord t)
+			 (nist/apply-transparency 95))
+
+		 (defun nist/apply-molokai-theme ()
+			 "Apply the `doom-molokai` theme"
+			 (interactive)
+			 (load-theme 'doom-molokai t)
+			 (nist/apply-transparency 95))
    #+END_SRC
+
+	 Apply theme
+	 #+BEGIN_SRC emacs-lisp
+		 (if (daemonp)
+				 (add-hook 'after-make-frame-functions
+									 (lambda (frame)
+										 (with-selected-frame frame (nist/apply-molokai-theme))))
+			 (nist/apply-molokai-theme))
+	 #+END_SRC
 
 ** Smooth scrolling
    #+BEGIN_SRC emacs-lisp
