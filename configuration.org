@@ -848,3 +848,90 @@
                  (setq sh-basic-offset 2
                        sh-indentation 2)))
    #+END_SRC
+** Web stuff
+   #+BEGIN_SRC emacs-lisp
+     (use-package web-mode
+       :config
+       (setq web-mode-markup-indent-offset 2)
+       (setq web-mode-code-indent-offset 2)
+       (setq web-mode-css-indent-offset 2)
+       (setq js-indent-level 2)
+       (setq web-mode-enable-auto-pairing nil)
+       (setq web-mode-enable-auto-expanding t)
+       (setq web-mode-enable-css-colorization t)
+       (setq web-mode-enable-auto-closing t)
+       (rainbow-mode)
+       (rspec-mode)
+       (yas-minor-mode))
+   #+END_SRC
+
+*** Use =web-mode= with embedded files to.
+   #+BEGIN_SRC emacs-lisp
+     (nist/add-auto-mode 'web-mode
+       "\\.erb$"
+       "\\.html$"
+       "\\.php$"
+       "\\.tpl$"
+       "\\.css$"
+       "\\.scss$"
+       "\\.xml$"
+       "\\.rhtml$")
+   #+END_SRC
+
+*** Please be polite with smartparens
+    #+BEGIN_SRC emacs-lisp
+      (sp-with-modes '(web-mode)
+        (sp-local-pair "%" "%"
+                       :unless '(sp-in-string-p)
+                       :post-handlers '(((lambda (&rest _ignored)
+                                           (just-one-space)
+                                           (save-excursion (insert " ")))
+                                         "SPC" "=" "#")))
+        (sp-local-tag "%" "<% "  " %>")
+        (sp-local-tag "=" "<%= " " %>")
+        (sp-local-tag "#" "<%# " " %>"))
+    #+END_SRC
+
+*** =web-beautify=
+    #+BEGIN_SRC emacs-lisp
+      (use-package web-beautify
+        :commands (web-beautify-css
+                   web-beautify-css-buffer
+                   web-beautify-html
+                   web-beautify-html-buffer
+                   web-beautify-js
+                   web-beautify-js-buffer))
+    #+END_SRC
+
+*** =emmet=
+    #+BEGIN_SRC emacs-lisp
+      (use-package emmet-mode
+        :diminish (emmet-mode . "ε")
+        :bind* (("C-)" . emmet-next-edit-point)
+                ("C-(" . emmet-prev-edit-point))
+        :commands (emmet-mode
+                   emmet-next-edit-point
+                   emmet-prev-edit-point)
+        :init
+        (setq emmet-indentation 2)
+        (setq emmet-move-cursor-between-quotes t)
+        :hook web-mode)
+    #+END_SRC
+*** Nginx
+    #+BEGIN_SRC emacs-lisp
+      (use-package nginx-mode
+        :commands (nginx-mode))
+    #+END_SRC
+
+*** JSON
+    #+BEGIN_SRC emacs-lisp
+      (use-package json-mode
+        :mode "\\.json\\"
+        :bind* (("{" . paredit-open-curly)
+                ("}" . paredit-close-curly)))
+    #+END_SRC
+** YAML
+   #+BEGIN_SRC emacs-lisp
+     (use-package yaml-mode
+       :ensure t)
+   #+END_SRC
