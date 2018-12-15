@@ -402,6 +402,24 @@
 				(add-hook 'with-editor-mode-hook 'evil-insert-state))
 		#+END_SRC
 
+** Projectile
+   #+BEGIN_SRC emacs-lisp
+     (defun nist/search-project-for-symbol-at-point ()
+       "Use `projectile-ag' to search the current project for `symbol-at-point'."
+       (interactive)
+       (projectile-ag (projectile-symbol-at-point)))
+
+		 (use-package ag
+		   :ensure t)
+
+		 (use-package projectile
+		   :ensure t
+		   :bind-keymap ("C-c p" . projectile-command-map)
+			 :init
+			 (global-set-key (kbd "C-c v") 'projectile-ag)
+			 (global-set-key (kbd "C-c C-v") 'nist/search-project-for-symbol-at-point))
+   #+END_SRC
+
 ** CSS and SASS
 **** Indent 2 spaces
 
