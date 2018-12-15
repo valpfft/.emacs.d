@@ -759,6 +759,13 @@
         :ensure t)
     #+END_SRC
 
+*** Features
+    #+BEGIN_SRC emacs-lisp
+      (use-package feature-mode
+        :ensure t
+        :after ruby-mode)
+    #+END_SRC
+
 *** Rubocop
     #+BEGIN_SRC emacs-lisp
       (use-package rubocop
@@ -826,6 +833,9 @@
         'ruby-mode
         "\\Gemfile$"
         "\\.rake$"
+        "\\.ru$"
+        "\\.cap$"
+        "\\Capfile$"
         "\\.gemspec$"
         "\\Guardfile$"
         "\\Rakefile$"
@@ -926,7 +936,6 @@
 *** JSON
     #+BEGIN_SRC emacs-lisp
       (use-package json-mode
-        :mode "\\.json\\"
         :bind* (("{" . paredit-open-curly)
                 ("}" . paredit-close-curly)))
     #+END_SRC
