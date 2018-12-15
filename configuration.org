@@ -417,6 +417,21 @@
 				(add-hook 'with-editor-mode-hook 'evil-insert-state))
 		#+END_SRC
 
+*** =company= for auto-completion
+    #+BEGIN_SRC emacs-lisp
+      (use-package company
+        :ensure t
+        :defer t
+        :init (global-company-mode)
+        :config
+        (progn
+          (bind-key [remap completion-at-point] #'company-complete company-mode-map)
+          (setq company-tooltip-align-annotations t
+                company-show-numbers t)
+          (setq company-dabbrev-downcase nil))
+        :diminish company-mode)
+    #+END_SRC
+
 ** Projectile
    #+BEGIN_SRC emacs-lisp
 		 (defun nist/search-project-for-symbol-at-point ()
