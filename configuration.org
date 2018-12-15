@@ -745,7 +745,18 @@
     #+BEGIN_SRC emacs-lisp
       (use-package rspec-mode
         :diminish rspec-mode
+        :commands rspec-install-snippets
+        :hook (dired-mode . rspec-dired-mode)
+        :config (with-eval-after-load 'yasnippet
+                  (rspec-install-snippets))
         :ensure t)
+    #+END_SRC
+
+*** Rubocop
+    #+BEGIN_SRC emacs-lisp
+      (use-package rubocop
+        :diminish rubocop-mode
+        :hook (ruby-mode . rubocop-mode))
     #+END_SRC
 
 *** Refactoring helpers
