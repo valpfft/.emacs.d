@@ -841,3 +841,10 @@
           '(evil-ex-define-cmd "cov[coverage]"
                                'coverage-mode)))
     #+END_SRC
+** Shell
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'sh-mode-hook
+               (lambda ()
+                 (setq sh-basic-offset 2
+                       sh-indentation 2)))
+   #+END_SRC
