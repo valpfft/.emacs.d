@@ -542,3 +542,144 @@
 	 #+BEGIN_SRC emacs-lisp
 		 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 	 #+END_SRC
+** Python
+	 More - [[https://github.com/howardabrams/dot-files/blob/master/emacs-python.org][in this tutorial]]
+
+	 Indent 2 spaces.
+	 #+BEGIN_SRC emacs-lisp
+	   (setq python-indent 2)
+	 #+END_SRC
+
+	 Virtualenv
+
+	 #+BEGIN_SRC emacs-lisp
+		 (use-package pyenv-mode
+			 :ensure t
+			 :config
+			 (defun projectile-pyenv-mode-set ()
+				 "Set pyenv version matching project name."
+				 (let ((project (projectile-project-name)))
+					 (if (member project (pyenv-mode-versions))
+							 (pyenv-mode-set project)
+						 (pyenv-mode-unset))))
+			 (add-hook 'projectile-switch-project-hook 'projectile-pyenv-mode-set)
+			 (add-hook 'python-mode-hook 'pyenv-mode))
+
+		 (use-package pyenv-mode-auto
+			 :ensure t)
+	 #+END_SRC
+
+	 WSGI files (be careful with tabs>)
+
+	 #+BEGIN_SRC emacs-lisp
+		 (use-package python
+			 :mode ("\\.py\\'" . python-mode)
+						 ("\\.wsgi$" . python-mode)
+			 :interpreter ("python" . python-mode)
+			 :init
+			 (setq-default indent-tabs-mode nil)
+			 :config
+			 (setq python-indent-offset 4)
+			 (add-hook 'python-mode-hook 'smartparens-mode))
+	 #+END_SRC
+
+   =jedi= with company-backend
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package jedi
+       :ensure t
+       :init
+       (add-to-list 'company-backends 'company-jedi)
+       :config
+       (use-package company-jedi
+         :ensure t
+         :init
+         (add-hook 'python-mode-hook (lambda () (add-to-list 'company-backends 'company-jedi)))
+         (setq company-jedi-python-bin "python")))
+   #+END_SRC
+
+	 And finally =elpy=
+
+	 #+BEGIN_SRC emacs-lisp
+		 (use-package elpy
+			 :ensure t
+			 :commands elpy-enable
+			 :init (with-eval-after-load 'python (elpy-enable))
+
+			 :config
+			 (electric-indent-local-mode -1)
+			 (delete 'elpy-module-highlight-indentation elpy-modules)
+			 (delete 'elpy-module-flymake elpy-modules)
+
+			 (defun ha/elpy-goto-definition ()
+				 (interactive)
+				 (condition-case err
+						 (elpy-goto-definition)
+					 ('error (xref-find-definitions (symbol-name (symbol-at-point))))))
+
+			 :bind (:map elpy-mode-map ([remap elpy-goto-definition] .
+																	ha/elpy-goto-definition)))
+	 #+END_SRC
+** Ruby
+*** Disable the ruby-reek cheker.
+
+    #+BEGIN_SRC emacs-lisp
+     (setq-default flycheck-disabled-checkers '(ruby-reek))
+    #+END_SRC
+
+*** Switch between implementation and spec
+
+    #+BEGIN_SRC emacs-lisp
+      (eval-after-load 'evil-ex
+        '(evil-ex-define-cmd "A[switch to test/model in new window]"
+                             'projectile-find-implementation-or-test-other-window))
+      (eval-after-load 'evil-ex
+        '(evil-ex-define-cmd "a[switch to test/model in current window"
+                             'projectile-toggle-between-implementation-and-test))
+
+    #+END_SRC
+
+*** Rubocop-autocorrect-current-file
+    #+BEGIN_SRC emacs-lisp
+      (eval-after-load 'evil-ex
+        '(evil-ex-define-cmd "cop[rubocop-autocorrect-current-file]"
+                             'rubocop-autocorrect-current-file))
+
+    #+END_SRC
+
+*** Visit last migration
+
+    #+BEGIN_SRC emacs-lisp
+      (eval-after-load 'evil-ex
+        '(evil-ex-define-cmd "vlm[visit-last-migration]"
+                             'hrs/visit-last-migration))
+    #+END_SRC
+*** =chruby=
+    I use =chruby= to switch between versions of Ruby. This sets a default version
+    to use within Emacs (for things like =xmp= or =rspec=).
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package chruby
+        :config
+        (chruby "2.5.1"))
+    #+END_SRC
+
+*** Eval into comments
+    =rcodetools= provides =xmp=, which lets us evaluate a Ruby buffer and
+    display the result in "magic" (=# =>=) comments.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq xmpfilter-command-name
+        "ruby -S xmpfilter --no-warnings --dev --fork --detect-rbtest")
+      (require 'rcodetools)
+    #+END_SRC
+
+    Install robe
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package robe
+        :ensure t
+        :bind ("C-M-." . robe-jump)
+        :init
+        (add-hook 'ruby-mode-hook 'robe-mode))
+    #+END_SRC
