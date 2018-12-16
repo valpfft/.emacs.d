@@ -1141,6 +1141,14 @@
         :config (setq ido-vertical-define-keys 'C-n-and-C-p-only))
     #+END_SRC
 
+*** Use =smex= to handle =M-x= with =ido=
+   #+BEGIN_SRC emacs-lisp
+     (use-package smex
+       :init (smex-initialize)
+       :bind* (("M-x" . smex)
+               ("M-X" . smex-major-mode-commands)))
+   #+END_SRC
+
 * Terminal
 ** =multi-term=
   #+BEGIN_SRC emacs-lisp
