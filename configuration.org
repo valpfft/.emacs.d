@@ -390,6 +390,44 @@
      (setq warning-suppress-types '((evil-collection))))
      #+END_SRC
 
+* =dired=
+** Extensions
+   #+BEGIN_SRC emacs-lisp
+     (use-package dired-details
+       :ensure t)
+   #+END_SRC
+
+** Media
+   #+BEGIN_SRC emacs-lisp
+     (use-package dired-open
+       :config
+       (setq dired-open-extensions
+             '(("pdf" . "zathura")
+               ("mkv" . "mpv")
+               ("mp4" . "mpv")
+               ("avi" . "mpv"))))
+   #+END_SRC
+
+** Force dired to use =ls -lhvA=
+   #+BEGIN_SRC emacs-lisp
+     (setq-default dired-listing-switches "-lhvA")
+   #+END_SRC
+
+** Force dired to use =mv -r=
+   #+BEGIN_SRC emacs-lisp
+     (setq dired-recursive-copies 'always)
+   #+END_SRC
+
+   But ask before recursively deleteing an directory
+   #+BEGIN_SRC emacs-lisp
+     (setq dired-recursive-deletes 'top)
+   #+END_SRC
+
+** Kill buffer on file remove
+   #+BEGIN_SRC emacs-lisp
+     (setq dired-clean-up-buffers-too t)
+   #+END_SRC
+
 * Utility functions
 ** Add a list of patterns to associate files with modes
 
