@@ -1149,6 +1149,17 @@
                ("M-X" . smex-major-mode-commands)))
    #+END_SRC
 
+** Markdown
+   Render markdown using pandoc
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package markdown-mode
+       :mode (("\\.md$" . gfm-mode))
+       :config
+       (setq markdown-command "pandoc --standalone --mathjax --from=markdown")
+       (add-hook 'gfm-mode-hook 'flyspell-mode))
+   #+END_SRC
+
 * Terminal
 ** =multi-term=
   #+BEGIN_SRC emacs-lisp
