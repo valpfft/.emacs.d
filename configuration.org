@@ -1504,3 +1504,11 @@
        (evil-set-initial-state 'deft-mode 'emacs)
        (advice-add 'deft-new-file-named :filter-args #'nist/deft-strip-spaces))
    #+END_SRC
+* Extensions
+** =restclient=
+   Useful mode to test API endpoints. Drop-in replacement to the postman
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package restclient
+       :ensure t)
+   #+END_SRC
