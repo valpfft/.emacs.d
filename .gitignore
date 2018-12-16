@@ -1,1 +1,15 @@
+abbrev_defs
+ac-comphist.dat
+auto-save-list/
+configuration.el
+elpa/
+eshell/
+garbage.el
+_minted-configuration/
+network-security.data
 private/
+projectile-bookmarks.eld
+resources/
+smex-items
+snippets/
+url/
