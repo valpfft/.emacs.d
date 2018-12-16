@@ -515,10 +515,15 @@
           (setq company-tooltip-align-annotations t
                 company-show-numbers t)
           (push 'company-robe company-backends)
-          (company-quickhelp-mode t)
-          (setq company-quickhelp-mode t)
           (setq company-dabbrev-downcase nil))
         :diminish company-mode)
+    #+END_SRC
+
+    =company-quickhelp=
+    #+BEGIN_SRC emacs-lisp
+      (use-package company-quickhelp
+        :init (company-quickhelp-mode t)
+        :config (setq company-quickhelp-mode t))
     #+END_SRC
 
 ** Projectile
@@ -1077,7 +1082,41 @@
      (global-set-key (kbd "C-x k") 'nist/kill-current-buffer)
    #+END_SRC
 
-**
+** Save my location within a file
+   Using =save-place-mode= saves the location of point for every file I visit.
+   If I close the file or close the editor, then later re-open it, point will be
+   at last place I visited.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package saveplace
+       :init (save-place-mode t))
+   #+END_SRC
+
+** Always indent with spaces
+   Never use tabs. (except Go) ;D
+
+   #+BEGIN_SRC emacs-lisp
+     (setq-default indent-tabs-mode nil)
+   #+END_SRC
+
+** Yasnippet
+   #+BEGIN_SRC emacs-lisp
+     (setq yas-snippet-dirs '("~/.emacs.d/snippets/text-mode"))
+     (yas-global-mode 1)
+   #+END_SRC
+
+** Configure =abbrev-mode=
+   My name and email is too hard to spell, so I like to keep some personal
+   information as abbreviations.
+
+   #+BEGIN_SRC emacs-lisp
+     (define-abbrev-table 'global-abbrev-table
+       '(("zname" "Valiantsin Mikhaliuk")
+         ("zemail" "valiantsin.mikhaliuk@gmail.com")
+         ("zgithub" "http://github.com/vmikhaliuk")))
+     (setq-default abbrev-mode t)
+   #+END_SRC
+
 * Terminal
 ** =multi-term=
   #+BEGIN_SRC emacs-lisp
