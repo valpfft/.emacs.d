@@ -1117,6 +1117,30 @@
      (setq-default abbrev-mode t)
    #+END_SRC
 
+** Configure =ido=
+*** Defaults
+    #+BEGIN_SRC emacs-lisp
+      (setq ido-enable-flex-matching t)
+      (setq ido-everywhere t)
+      (ido-mode 1)
+      (setq ido-create-new-buffer 'always)
+    #+END_SRC
+*** Better and faster matching
+    #+BEGIN_SRC emacs-lisp
+      (use-package flx-ido
+        :ensure t
+        :after ido
+        :init (flx-ido-mode 1)
+        :config (setq ido-enable-flex-matching t))
+    #+END_SRC
+*** Vertical buffer
+    #+BEGIN_SRC emacs-lisp
+      (use-package ido-vertical-mode
+        :ensure t
+        :init (ido-vertical-mode 1)
+        :config (setq ido-vertical-define-keys 'C-n-and-C-p-only))
+    #+END_SRC
+
 * Terminal
 ** =multi-term=
   #+BEGIN_SRC emacs-lisp
