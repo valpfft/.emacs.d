@@ -466,6 +466,7 @@
         :diminish company-mode)
     #+END_SRC
 
+
 ** Projectile
    #+BEGIN_SRC emacs-lisp
 		 (defun nist/search-project-for-symbol-at-point ()
@@ -1002,6 +1003,15 @@
      (add-to-list 'exec-path "~/code/gocode/bin")
      (add-hook 'before-save-hook 'gofmt-before-save)
    #+END_SRC
+** Graphviz
+   Graph visualization
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package graphviz-dot-mode
+       :ensure t
+       :mode "\\.dot\\")
+   #+END_SRC
+
 * Terminal
 ** =multi-term=
   #+BEGIN_SRC emacs-lisp
@@ -1047,4 +1057,217 @@
             (get-buffer-process (rename-buffer buffer-name))
             (format "ssh -i ~/.ssh/deploy valiantsin_mikhaliuk@%s\r" x)))))
      (global-set-key (kbd "M-s s") 'ssh-to-host)
+   #+END_SRC
+* Org-mode
+** Display preferences
+*** =org-bullets=
+    #+BEGIN_SRC emacs-lisp
+      (use-package org-bullets
+        :ensure t
+        :commands (org-bullets-mode)
+        :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+    #+END_SRC
+
+*** Syntax highlight for edited blocks
+    #+BEGIN_SRC emacs-lisp
+      (setq org-src-fontify-natively t)
+    #+END_SRC
+
+*** spaces = tab pls
+    #+BEGIN_SRC emacs-lisp
+      (setq org-src-tab-acts-natively t)
+    #+END_SRC
+
+*** Use current window for pop-ups
+    #+BEGIN_SRC emacs-lisp
+      (setq org-src-window-setup 'current-window)
+    #+END_SRC
+** org-structure-template. For useful drawers, like default <s
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'org-structure-template-alist
+                  (list "p" (concat ":PROPERTIES:\n"
+                                    "?\n"
+                                    ":END:")))
+
+     (add-to-list 'org-structure-template-alist
+                  (list "eh" (concat ":EXPORT_FILE_NAME: ?\n"
+                                     ":EXPORT_TITLE:\n"
+                                     ":EXPORT_OPTIONS: toc:nil html-postamble:nil num:nil")))
+
+     (add-to-list 'org-structure-template-alist
+                  (list "eb" (concat ":EXPORT_FILE_NAME: ?\n"
+                                     ":EXPORT_TITLE:\n"
+                                     ":EXPORT_BEAMER_HEADER: \\subtitle{}\n"
+                                     ":EXPORT_AUTHOR: Valiantsin Mikhaliuk\n"
+                                     ":EXPORT_OPTIONS: H:1 toc:nil\n"
+                                     ":EXPORT_BEAMER_THEME: metropolis\n"
+                                     ":EXPORT_LATEX_CLASS: beamer")))
+   #+END_SRC
+
+** Exporting
+*** General
+    #+BEGIN_SRC emacs-lisp
+      (setq org-export-initial-scope 'subtree)
+    #+END_SRC
+
+    Fix curly quotes when exporting
+    #+BEGIN_SRC emacs-lisp
+      (setq org-export-with-smart-quotes t)
+    #+END_SRC
+
+    Remove contact info from HTML footers
+    #+BEGIN_SRC emacs-lisp
+      (setq org-html-postamble nil)
+    #+END_SRC
+
+*** Markdown
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-md
+        :config
+        (setq org-md-headline-style 'atx))
+    #+END_SRC
+
+    =gfm=
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-gfm
+        :ensure t)
+    #+END_SRC
+
+*** Presentations
+    Old but gold
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-beamer
+        :ensure t
+        :defer t)
+    #+END_SRC
+
+    Bootstrap
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-twbs
+        :ensure t)
+    #+END_SRC
+
+    Google styled slides
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-ioslide
+        :ensure t)
+    #+END_SRC
+
+*** =babel= evaluating customization
+    Prety useful for course/book notes.
+    Also add non-standard go loader
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package ob-go
+        :ensure t)
+
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((emacs-lisp . t)
+         (R . t)
+         (ruby . t)
+         (haskell . nil)
+         (latex . t)
+         (ledger . t)
+         (ocaml . t)
+         (shell . t)
+         (sql . t)
+         (sqlite . t)
+         (go . t)
+         (dot . t)
+         (python . t)
+         (gnuplot . t)))
+    #+END_SRC
+
+    Stop asking before evaluating
+    #+BEGIN_SRC emacs-lisp
+      (setq org-confirm-babel-evaluate nil)
+    #+END_SRC
+
+*** PDF
+    #+BEGIN_SRC emacs-lisp
+      (setq org-latex-pdf-process
+            '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+              "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+              "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+    #+END_SRC
+
+    Source code highlighting with =minted= package
+
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'org-latex-packages-alist '("" "minted"))
+      (setq org-latex-listings 'minted)
+    #+END_SRC
+
+*** TeX configuration
+    I maintain a two files in LaTeX, but I often export through it org-mode documents.
+
+    Parse file after load
+    #+BEGIN_SRC emacs-lisp
+      (setq TeX-parse-self t)
+    #+END_SRC
+
+    Force =pdflatex= for compiling.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq TeX-PDF-mode t)
+    #+END_SRC
+
+*** HTML
+    #+BEGIN_SRC emacs-lisp
+      (use-package htmlize
+        :commands (htmlize-buffer
+                   htmlize-file
+                   htmlize-many-files
+                   htmlize-many-files-dired
+                   htmlize-region))
+    #+END_SRC
+
+** Calendar holidays
+   #+BEGIN_SRC emacs-lisp
+     (setq calendar-holidays
+           '((holiday-fixed 1 1 "New Year")
+             (holiday-fixed 1 6 "Trzech Króli")
+             (holiday-fixed 4 1 "Wielkanoc")
+             (holiday-fixed 4 2 "Poniedziałek Wielkanocny")
+             (holiday-fixed 5 1 "Swięto pracy")
+             (holiday-fixed 5 3 "Swięto konstytucji")
+             (holiday-fixed 5 20 "Zesłanie Ducha Świętego (Zielone Świątki)")
+             (holiday-fixed 5 31 "Boże Ciało")
+             (holiday-fixed 8 15 "Święto Wojska Polskiego")
+             (holiday-fixed 11 1 "Wszystkich Świętych")
+             (holiday-fixed 11 11 "Święto Niepodległości")
+             (holiday-fixed 12 25 "Boże Narodzenie (pierwszy dzień)")
+             (holiday-fixed 12 26 "Boże Narodzenie (drugi dzień)")))
+   #+END_SRC
+** Open html files in browser after export when o pressed
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-mode-hook
+               '(lambda () (setq org-file-apps
+                                 (append '(("\\.x?html?\\'" . "/usr/bin/chromium %s"))))))
+   #+END_SRC
+** Open compiled PDFs in =zathura= instead of in the Emacs.
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-mode-hook
+               '(lambda ()
+                  (delete '("\\.pdf\\'" . default) org-file-apps)
+                  (add-to-list 'org-file-apps '("\\.pdf\\'" . "zathura %s"))))
+   #+END_SRC
+** Quickly explore my =notes= directory with =deft=
+   #+BEGIN_SRC emacs-lisp
+     (use-package deft
+       :bind ("C-c n" . deft)
+       :commands (deft)
+       :config
+
+       (setq deft-directory "~/Dropbox/org/notes"
+             deft-extensions '("org")
+             deft-default-extension "org"
+             deft-text-mode 'org-mode
+             deft-auto-save-interval 0
+             deft-recursive t
+             deft-use-filter-string-for-filename t
+             deft-use-filename-as-title t)
+       (evil-set-initial-state 'deft-mode 'emacs)
+       (advice-add 'deft-new-file-named :filter-args #'nist/deft-strip-spaces))
    #+END_SRC
