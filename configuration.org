@@ -1517,3 +1517,14 @@
      (use-package restclient
        :ensure t)
    #+END_SRC
+** =pdf-tools=
+   #+BEGIN_SRC emacs-lisp
+     (use-package pdf-tools
+       :pin manual
+       :config
+       (pdf-tools-install)
+       (evil-collection-init)
+       (setq-default pdf-view-display-size 'fit-page)
+       (evil-set-initial-state 'pdf-view-mode 'normal)
+       (setq pdf-annot-activate-created-annotations t))
+   #+END_SRC
