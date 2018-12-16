@@ -515,10 +515,11 @@
           (setq company-tooltip-align-annotations t
                 company-show-numbers t)
           (push 'company-robe company-backends)
+          (company-quickhelp-mode t)
+          (setq company-quickhelp-mode t)
           (setq company-dabbrev-downcase nil))
         :diminish company-mode)
     #+END_SRC
-
 
 ** Projectile
    #+BEGIN_SRC emacs-lisp
@@ -1076,6 +1077,7 @@
      (global-set-key (kbd "C-x k") 'nist/kill-current-buffer)
    #+END_SRC
 
+**
 * Terminal
 ** =multi-term=
   #+BEGIN_SRC emacs-lisp
