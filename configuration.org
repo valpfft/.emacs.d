@@ -1172,6 +1172,12 @@
      (global-set-key (kbd "C-c q") 'auto-fill-mode)
    #+END_SRC
 
+** Allow to modify region case
+   #+BEGIN_SRC emacs-lisp
+     (put 'downcase-region 'disabled nil)
+     (put 'upcase-region 'disabled nil)
+   #+END_SRC
+
 * Terminal
 ** =multi-term=
   #+BEGIN_SRC emacs-lisp
