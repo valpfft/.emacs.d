@@ -474,6 +474,21 @@
        (list (replace-regexp-in-string " " "-" (car args))))
    #+END_SRC
 
+** Switch windows
+   #+BEGIN_SRC emacs-lisp
+     (defun nist/split-window-below-and-switch ()
+       "Split the window horizontally, then switch to the new pane."
+       (interactive)
+       (split-window-below)
+       (other-window 1))
+
+     (defun nist/split-window-right-and-switch ()
+       "Split the window vertically, then switch to the new pane."
+       (interactive)
+       (split-window-right)
+       (other-window 1))
+   #+END_SRC
+
 * Programming
 ** Common
 *** Default tab width
@@ -528,21 +543,23 @@
 
 ** Projectile
    #+BEGIN_SRC emacs-lisp
-		 (defun nist/search-project-for-symbol-at-point ()
-			 "Use `projectile-ag' to search the current project for `symbol-at-point'."
-			 (interactive)
-			 (projectile-ag (projectile-symbol-at-point)))
+     (defun nist/search-project-for-symbol-at-point ()
+       "Use `projectile-ag' to search the current project for `symbol-at-point'."
+       (interactive)
+       (projectile-ag (projectile-symbol-at-point)))
 
-		 (use-package ag
-			 :ensure t)
+     (use-package ag
+       :ensure t)
 
-		 (use-package projectile
-			 :ensure t
-			 :bind-keymap ("C-c p" . projectile-command-map)
-			 :init
-			 (global-set-key (kbd "C-c v") 'projectile-ag)
-			 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
-			 (global-set-key (kbd "C-c C-v") 'nist/search-project-for-symbol-at-point))
+     (use-package projectile
+       :ensure t
+       :bind-keymap ("C-c p" . projectile-command-map)
+       :init (projectile-global-mode)
+       :config
+       (setq projectile-require-project-root nil)
+       (global-set-key (kbd "C-c v") 'projectile-ag)
+       (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+       (global-set-key (kbd "C-c C-v") 'nist/search-project-for-symbol-at-point))
    #+END_SRC
 
 ** Flycheck
@@ -1176,6 +1193,12 @@
    #+BEGIN_SRC emacs-lisp
      (put 'downcase-region 'disabled nil)
      (put 'upcase-region 'disabled nil)
+   #+END_SRC
+
+** Switch windows when splitting
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-x 2") 'nist/split-window-below-and-switch)
+     (global-set-key (kbd "C-x 3") 'nist/split-window-right-and-switch)
    #+END_SRC
 
 * Terminal
