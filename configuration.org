@@ -1384,12 +1384,24 @@
            (concat "~/Dropbox/archive.org" "::* From %s"))
    #+END_SRC
 ** Agenda
+*** Feed agenda with following files
+
    #+BEGIN_SRC emacs-lisp
      (setq org-agenda-files (list org-index-file
                                   "~/Dropbox/org/payments.org"
                                   "~/Dropbox/org/habits.org"
                                   "~/Dropbox/org/couple.org"))
    #+END_SRC
+*** Start agenda in =normal= mode
+    #+BEGIN_SRC emacs-lisp
+      (eval-after-load 'org-agenda
+        '(progn (evil-set-initial-state 'org-agenda-mode 'normal)))
+    #+END_SRC
+*** Leave agenda =q=
+    #+BEGIN_SRC emacs-lisp
+      (evil-define-key 'normal org-agenda-mode-map
+        "q" 'org-agenda-quit)
+    #+END_SRC
 
 ** Keybindings
    #+BEGIN_SRC emacs-lisp
