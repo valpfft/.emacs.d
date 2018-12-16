@@ -459,6 +459,21 @@
        (kill-buffer "migrate"))
    #+END_SRC
 
+** Kill current buffer
+   #+BEGIN_SRC emacs-lisp
+     (defun nist/kill-current-buffer ()
+       "Kill the current buffer silently."
+       (interactive)
+       (kill-buffer (current-buffer)))
+   #+END_SRC
+
+** Strip spaces (used for deft filenames)
+   #+BEGIN_SRC emacs-lisp
+     (defun nist/deft-strip-spaces (args)
+       "Replace spaces with - in the string contained in the first element of the list args."
+       (list (replace-regexp-in-string " " "-" (car args))))
+   #+END_SRC
+
 * Programming
 ** Common
 *** Default tab width
@@ -1047,7 +1062,18 @@
    #+BEGIN_SRC emacs-lisp
      (use-package graphviz-dot-mode
        :ensure t
-       :mode "\\.dot\\")
+       :mode "dot")
+   #+END_SRC
+
+* Editing preferences
+** Delete trailing white-space's
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'before-save-hook 'delete-trailing-whitespace)
+   #+END_SRC
+
+** Always kill current buffer
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-x k") 'nist/kill-current-buffer)
    #+END_SRC
 
 * Terminal
@@ -1161,6 +1187,9 @@
 *** Markdown
     #+BEGIN_SRC emacs-lisp
       (use-package ox-md
+        :after org
+        :ensure t
+        :disabled t
         :config
         (setq org-md-headline-style 'atx))
     #+END_SRC
@@ -1175,7 +1204,9 @@
     Old but gold
     #+BEGIN_SRC emacs-lisp
       (use-package ox-beamer
+        :after org
         :ensure t
+        :disabled t
         :defer t)
     #+END_SRC
 
@@ -1278,12 +1309,14 @@
              (holiday-fixed 12 25 "Boże Narodzenie (pierwszy dzień)")
              (holiday-fixed 12 26 "Boże Narodzenie (drugi dzień)")))
    #+END_SRC
+
 ** Open html files in browser after export when o pressed
    #+BEGIN_SRC emacs-lisp
      (add-hook 'org-mode-hook
                '(lambda () (setq org-file-apps
                                  (append '(("\\.x?html?\\'" . "/usr/bin/chromium %s"))))))
    #+END_SRC
+
 ** Open compiled PDFs in =zathura= instead of in the Emacs.
    #+BEGIN_SRC emacs-lisp
      (add-hook 'org-mode-hook
@@ -1291,6 +1324,7 @@
                   (delete '("\\.pdf\\'" . default) org-file-apps)
                   (add-to-list 'org-file-apps '("\\.pdf\\'" . "zathura %s"))))
    #+END_SRC
+
 ** Quickly explore my =notes= directory with =deft=
    #+BEGIN_SRC emacs-lisp
      (use-package deft
