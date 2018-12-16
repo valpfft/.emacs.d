@@ -1528,3 +1528,22 @@
        (evil-set-initial-state 'pdf-view-mode 'normal)
        (setq pdf-annot-activate-created-annotations t))
    #+END_SRC
+** =org-pdfview=
+   #+BEGIN_SRC emacs-lisp
+     (use-package org-pdfview
+       :ensure t)
+   #+END_SRC
+** =interleave=
+   #+BEGIN_SRC emacs-lisp
+     (use-package interleave
+       :ensure t)
+   #+END_SRC
+* Shortcuts
+** Emacs config
+   #+BEGIN_SRC emacs-lisp
+     (defun nist/visit-emacs-config ()
+       (interactive)
+       (find-file "~/.emacs.d/configuration.org"))
+
+     (global-set-key (kbd "C-c t e") 'nist/visit-emacs-config)
+   #+END_SRC
