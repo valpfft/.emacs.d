@@ -1160,6 +1160,18 @@
        (add-hook 'gfm-mode-hook 'flyspell-mode))
    #+END_SRC
 
+** =AutoFillMode=
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'text-mode-hook 'turn-on-auto-fill)
+     (add-hook 'text-mode-hook '(lambda () (set-fill-column 80)))
+     (add-hook 'gfm-mode-hook 'turn-on-auto-fill)
+     (add-hook 'gfm-mode-hook '(lambda () (set-fill-column 80)))
+     (add-hook 'org-mode-hook 'turn-on-auto-fill)
+     (add-hook 'org-mode-hook '(lambda () (set-fill-column 80)))
+
+     (global-set-key (kbd "C-c q") 'auto-fill-mode)
+   #+END_SRC
+
 * Terminal
 ** =multi-term=
   #+BEGIN_SRC emacs-lisp
