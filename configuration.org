@@ -559,6 +559,7 @@
      (defun nist/open-index-file ()
        "Open the master org TODO list."
        (interactive)
+       (find-file org-index-file)
        (flycheck-mode -1)
        (end-of-buffer))
    #+END_SRC
@@ -644,12 +645,12 @@
 
      (use-package projectile
        :ensure t
-       :bind-keymap ("C-c p" . projectile-command-map)
        :init (projectile-global-mode)
        :config
        (setq projectile-require-project-root nil)
        (global-set-key (kbd "C-c v") 'projectile-ag)
        (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+       (define-key evil-normal-state-map (kbd "C-M-p") 'projectile-switch-project)
        (global-set-key (kbd "C-c C-v") 'nist/search-project-for-symbol-at-point))
    #+END_SRC
 
@@ -1701,7 +1702,7 @@
        :config
        (pdf-tools-install)
        (evil-collection-init)
-       (setq-default pdf-view-display-size 'fit-page)
+       (setq-default pdf-view-display-size 'fit-width)
        (evil-set-initial-state 'pdf-view-mode 'normal)
        (setq pdf-annot-activate-created-annotations t))
    #+END_SRC
