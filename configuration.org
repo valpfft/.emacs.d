@@ -442,7 +442,6 @@
        (dolist (pattern patterns)
          (add-to-list 'auto-mode-alist (cons pattern mode))))
    #+END_SRC
-
 ** Open last file in dired buffer
    #+BEGIN_SRC emacs-lisp
      (defun nist/visit-last-dired-file ()
@@ -919,10 +918,10 @@
         :commands rspec-install-snippets
         :hook (dired-mode . rspec-dired-mode)
         :config
-        (with-eval-after-load 'yasnippet
-          (rspec-install-snippets))
+        (with-eval-after-load 'yasnippet (rspec-install-snippets))
         (add-hook 'rspec-compilation-mode-hook
                   (lambda ()
+                    (chruby-use-corresponding)
                     (make-local-variable 'compilation-scroll-output)
                     (setq compilation-scroll-output 'first-error)))
         :ensure t)
@@ -1686,6 +1685,19 @@
      #+BEGIN_SRC emacs-lisp
        (setq org-log-done 'time)
      #+END_SRC
+** Use =evil= with Org agendas
+   #+BEGIN_SRC emacs-lisp
+     (use-package evil-org
+       :ensure t
+       :after org
+       :config
+       (add-hook 'org-mode-hook 'evil-org-mode)
+       (add-hook 'evil-org-mode-hook
+                 (lambda () (evil-org-set-key-theme)))
+       :init
+       (require 'evil-org-agenda)
+       (evil-org-agenda-set-keys))
+   #+END_SRC
 
 * Extensions
 ** =restclient=
