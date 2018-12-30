@@ -709,7 +709,8 @@
 									 )))
 	 #+End_SRC
 
-** JavaScript (and CoffeeScript)
+** JavaScript
+*** Coffee
 	 #+BEGIN_SRC emacs-lisp
 		 (use-package coffee-mode
 			 :ensure t
@@ -737,6 +738,11 @@
 			 (delete-file (plist-get props :sourcemap)))
 		 (add-hook 'coffee-after-compile-hook 'nist/coffee-after-compile-hook)
 	 #+END_SRC
+
+*** VueJS
+    #+BEGIN_SRC emacs-lisp
+      (use-package vue-mode)
+    #+END_SRC
 
 ** Lisps
 
@@ -1699,8 +1705,8 @@
 ** Use =evil= with Org agendas
    #+BEGIN_SRC emacs-lisp
      (use-package evil-org
-       :ensure t
        :after org
+       :diminish evil-org-mode
        :config
        (add-hook 'org-mode-hook 'evil-org-mode)
        (add-hook 'evil-org-mode-hook
