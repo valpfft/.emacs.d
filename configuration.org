@@ -885,7 +885,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package chruby
         :config
-        (chruby "2.5.3"))
+        (chruby "2.6.0"))
     #+END_SRC
 
 *** Eval into comments
@@ -1117,6 +1117,14 @@
      (use-package yaml-mode
        :ensure t)
    #+END_SRC
+** =dumb-jump=
+   #+BEGIN_SRC emacs-lisp
+     (use-package dumb-jump
+       :config
+       (define-key evil-normal-state-map (kbd "M-.") 'dumb-jump-go)
+       (setq dumb-jump-selector 'ivy))
+   #+END_SRC
+
 ** Golang
 *** Set environment
     #+BEGIN_SRC emacs-lisp
