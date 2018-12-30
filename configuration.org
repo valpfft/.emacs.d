@@ -645,12 +645,15 @@
      (use-package projectile
        :ensure t
        :init (projectile-global-mode)
+       :bind
+       ("C-c v" . 'projectile-ag)
+       ("C-c C-v" . 'nist/search-project-for-symbol-at-point)
        :config
        (setq projectile-require-project-root nil)
-       (global-set-key (kbd "C-c v") 'projectile-ag)
+       (setq projectile-completion-system 'ivy)
+       (setq projectile-switch-project-action 'projectile-dired)
        (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
-       (define-key evil-normal-state-map (kbd "C-M-p") 'projectile-switch-project)
-       (global-set-key (kbd "C-c C-v") 'nist/search-project-for-symbol-at-point))
+       (define-key evil-normal-state-map (kbd "C-M-p") 'projectile-switch-project))
    #+END_SRC
 
 ** Flycheck
