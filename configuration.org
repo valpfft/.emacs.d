@@ -407,8 +407,7 @@
      (use-package dired-open
        :config
        (setq dired-open-extensions
-             '(("pdf" . "zathura")
-               ("mkv" . "mpv")
+             '(("mkv" . "mpv")
                ("mp4" . "mpv")
                ("avi" . "mpv"))))
    #+END_SRC
@@ -432,6 +431,13 @@
    #+BEGIN_SRC emacs-lisp
      (setq dired-clean-up-buffers-too t)
    #+END_SRC
+
+* =helm=
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm
+      :ensure t
+      :config)
+  #+END_SRC
 
 * Utility functions
 ** Add a list of patterns to associate files with modes
@@ -632,15 +638,20 @@
         :config (setq company-quickhelp-mode t))
     #+END_SRC
 
+*** =ag= aka silver searcher
+    #+BEGIN_SRC emacs-lisp
+      (use-package ag
+        :ensure t
+        :config
+        (define-key evil-normal-state-map (kbd "M-p") 'helm-do-grep-ag))
+    #+END_SRC
+
 ** Projectile
    #+BEGIN_SRC emacs-lisp
      (defun nist/search-project-for-symbol-at-point ()
        "Use `projectile-ag' to search the current project for `symbol-at-point'."
        (interactive)
        (projectile-ag (projectile-symbol-at-point)))
-
-     (use-package ag
-       :ensure t)
 
      (use-package projectile
        :ensure t
@@ -1121,6 +1132,7 @@
         :bind* (("{" . paredit-open-curly)
                 ("}" . paredit-close-curly)))
     #+END_SRC
+
 ** YAML
    #+BEGIN_SRC emacs-lisp
      (use-package yaml-mode
