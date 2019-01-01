@@ -48,6 +48,7 @@
    #+BEGIN_SRC emacs-lisp
      (load-file "~/.emacs.d/resources/ignoramus/ignoramus.el")
      (use-package ignoramus
+       :ensure nil
        :config (ignoramus-setup))
    #+END_SRC
 
@@ -111,11 +112,12 @@
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
        :defer 10
+       :diminish which-key-mode
        :config
        (progn
-	 (setq which-key-popup-type 'side-window)
-	 (setq which-key-compute-remaps t)
-	 (setq which-key-allow-multiple-replacements t))
+         (setq which-key-popup-type 'side-window)
+         (setq which-key-compute-remaps t)
+         (setq which-key-allow-multiple-replacements t))
        (which-key-mode))
    #+END_SRC
 
@@ -168,7 +170,8 @@
 ** Which-function
    #+BEGIN_SRC emacs-lisp
      (use-package which-func
-       :ensure
+       :ensure t
+       :diminish which-func-mode
        :init)
    #+END_SRC
 
@@ -279,8 +282,7 @@
    This either hides or renames a variety of modes using the =diminish= package.
 
    #+BEGIN_SRC emacs-lisp
-     (use-package diminish
-       :init)
+     (use-package diminish)
      (defmacro diminish-minor-mode (filename mode &optional abbrev)
        `(eval-after-load (symbol-name ,filename)
 	  '(diminish ,mode ,abbrev)))
@@ -291,23 +293,12 @@
 
      (diminish-minor-mode 'abbrev 'abbrev-mode)
      (diminish-minor-mode 'simple 'auto-fill-function)
-     (diminish-minor-mode 'company 'company-mode)
      (diminish-minor-mode 'eldoc 'eldoc-mode)
-     (diminish-minor-mode 'flycheck 'flycheck-mode)
      (diminish-minor-mode 'flyspell 'flyspell-mode)
      (diminish-minor-mode 'global-whitespace 'global-whitespace-mode)
-     (diminish-minor-mode 'projectile 'projectile-mode)
-     (diminish-minor-mode 'ruby-end 'ruby-end-mode)
-     (diminish-minor-mode 'subword 'subword-mode)
-     (diminish-minor-mode 'yard-mode 'yard-mode)
-     (diminish-minor-mode 'yasnippet 'yas-minor-mode)
-     (diminish-minor-mode 'helm 'helm-mode)
      (diminish-minor-mode 'wrap-region 'wrap-region-mode)
-     (diminish-minor-mode 'which-key 'which-key-mode)
      (diminish-minor-mode 'focus-autosave-mode 'focus-autosave-mode)
-     (diminish-minor-mode 'paredit 'paredit-mode " π")
      (diminish-minor-mode 'undo-tree 'undo-tree-mode)
-     (diminish-major-mode 'magit-mode " ")
      (diminish-major-mode 'emacs-lisp-mode-hook "el")
      (diminish-major-mode 'haskell-mode-hook "λ=")
      (diminish-major-mode 'lisp-interaction-mode-hook "λ")
@@ -366,7 +357,7 @@
 ** =smartparens=
    #+BEGIN_SRC emacs-lisp
      (use-package evil-smartparens
-     :diminish evil-smartparens-mode
+     :diminish smartparens-mode
      :config
      (evil-smartparens-mode)
      (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
@@ -456,6 +447,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package helm
       :ensure t
+      :diminish helm-mode
       :config)
   #+END_SRC
 
@@ -615,7 +607,9 @@
 
 *** CamelCase everywhere
 	 #+BEGIN_SRC emacs-lisp
-	   (global-subword-mode 1)
+     (use-package subword
+       :init (global-subword-mode)
+       :diminish subword-mode)
 	 #+END_SRC
 
 *** Scroll compilation window to bottom automatically
@@ -625,14 +619,15 @@
 
 *** =Magit= (Emacs mode for interactions with or even More)
 		#+BEGIN_SRC emacs-lisp
-		  (use-package evil-magit)
-			(use-package magit
-			  :bind ("C-x g" . magit-status)
-				:config
-				(use-package evil-magit)
-				(setq magit-push-always-verify nil)
-				(add-hook 'git-commit-mode-hook 'turn-on-flyspell)
-				(add-hook 'with-editor-mode-hook 'evil-insert-state))
+      (use-package evil-magit)
+      (use-package magit
+        :bind ("C-x g" . magit-status)
+        :diminish " "
+        :config
+        (use-package evil-magit)
+        (setq magit-push-always-verify nil)
+        (add-hook 'git-commit-mode-hook 'turn-on-flyspell)
+        (add-hook 'with-editor-mode-hook 'evil-insert-state))
 		#+END_SRC
 
 *** =company= for auto-completion
@@ -640,6 +635,7 @@
       (use-package company
         :ensure t
         :defer t
+        :diminish company-mode
         :init (global-company-mode)
         :config
         (progn
@@ -675,6 +671,7 @@
 
      (use-package projectile
        :ensure t
+       :diminish projectile-mode
        :init (projectile-global-mode)
        :bind
        ("C-c v" . 'projectile-ag)
@@ -691,6 +688,7 @@
    #+BEGIN_SRC emacs-lisp
      (use-package flycheck
        :ensure t
+       :diminish flycheck-mode
        :init (global-flycheck-mode))
    #+END_SRC
 
@@ -729,15 +727,18 @@
 	 Enable =haskell-doc-mode= (smart function signatures and smart indentation).
 
 	 #+BEGIN_SRC emacs-lisp
-		 (setq exec-path (append exec-path (list "~/.cabal/bin")))
-		 (use-package haskell-mode
-			 :ensure t
-			 :config
-			 (add-hook 'haskell-mode-hook
-								 (lambda ()
-									 (haskell-doc-mode)
-									 (turn-on-haskell-indent)
-									 )))
+     (setq exec-path (append exec-path (list "~/.cabal/bin")))
+     (use-package haskell-mode
+       :ensure t
+
+       :diminish haskell-doc-mode
+       :diminish haskell-indent-mode
+       :config
+       (add-hook 'haskell-mode-hook
+                 (lambda ()
+                   (haskell-doc-mode)
+                   (turn-on-haskell-indent)
+                   )))
 	 #+End_SRC
 
 ** JavaScript
@@ -780,11 +781,12 @@
 	 Install required packages
 
 	 #+BEGIN_SRC emacs-lisp
-		 (use-package paredit
-			 :ensure t)
-		 (use-package rainbow-delimiters
-			 :ensure t
-			 :init)
+     (use-package paredit
+       :diminish paredit-mode
+       :ensure t)
+     (use-package rainbow-delimiters
+       :ensure t
+       :init)
 	 #+END_SRC
 
 	 Add some hooks
@@ -993,6 +995,13 @@
         :hook (ruby-mode . ruby-refactor-mode))
     #+END_SRC
 
+*** =ruby-end=
+    Automatically insert end keyword
+    #+BEGIN_SRC emacs-lisp
+      (use-package ruby-end
+        :diminish ruby-end-mode)
+    #+END_SRC
+
 *** Override =%= to play nicely with ruby blocks
     #+BEGIN_SRC emacs-lisp
       (evil-define-motion evil-ruby-jump-item (count)
@@ -1010,7 +1019,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package yard-mode
-        :diminish t
+        :diminish yard-mode
         :ensure t)
     #+END_SRC
 
@@ -1258,8 +1267,11 @@
 
 ** Yasnippet
    #+BEGIN_SRC emacs-lisp
-     (setq yas-snippet-dirs '("~/.emacs.d/snippets/text-mode"))
-     (yas-global-mode 1)
+     (use-package yasnippet
+       :diminish yas-minor-mode
+       :init (yas-global-mode)
+       :config
+       (setq yas-snippet-dirs '("~/.emacs.d/snippets/text-mode")))
    #+END_SRC
 
 ** Configure =abbrev-mode=
@@ -1427,6 +1439,8 @@
 * Org-mode
 ** General settings
    #+BEGIN_SRC emacs-lisp
+     (use-package org
+       :diminish org-indent-mode)
      (setq org-directory "~/Dropbox/org/")
      (setq org-index-file "~/Dropbox/org/index.org")
      (setq org-archive-location
