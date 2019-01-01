@@ -343,6 +343,26 @@
        :config
        (add-hook 'dired-mode-hook 'stripe-buffer-mode))
    #+END_SRC
+
+** Configure =ivy= and =counsel=
+   #+BEGIN_SRC emacs-lisp
+     (use-package counsel
+       :diminish ivy-mode
+       :bind
+       ("M-x" . 'counsel-M-x)
+       ("C-s" . 'swiper)
+       :config
+       (use-package flx)
+       (use-package smex)
+       (ivy-mode 1)
+       (setq ivy-use-virtual-buffers t)
+       (setq ivy-count-format "(%d/%d) ")
+       (setq ivy-initial-inputs-alist nil)
+       (setq ivy-re-builders-alist
+             '((swiper . ivy--regex-plus)
+               (t . ivy--regex-fuzzy))))
+   #+END_SRC
+
 ** =smartparens=
    #+BEGIN_SRC emacs-lisp
      (use-package evil-smartparens
