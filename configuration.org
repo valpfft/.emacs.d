@@ -443,13 +443,6 @@
      (setq dired-clean-up-buffers-too t)
    #+END_SRC
 
-* =helm=
-  #+BEGIN_SRC emacs-lisp
-    (use-package helm
-      :ensure t
-      :diminish helm-mode
-      :config)
-  #+END_SRC
 
 * Utility functions
 ** Add a list of patterns to associate files with modes
@@ -658,8 +651,9 @@
     #+BEGIN_SRC emacs-lisp
       (use-package ag
         :ensure t
-        :config
-        (define-key evil-normal-state-map (kbd "M-p") 'helm-do-grep-ag))
+        :bind
+        (:map evil-normal-state-map
+              ("M-p" . counsel-ag)))
     #+END_SRC
 
 ** Projectile
