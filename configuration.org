@@ -912,8 +912,9 @@
     #+BEGIN_SRC emacs-lisp
       (eval-after-load 'evil-ex
         '(evil-ex-define-cmd "vlm[visit-last-migration]"
-                             'hrs/visit-last-migration))
+                             'nist/visit-last-migration))
     #+END_SRC
+
 *** =chruby=
     I use =chruby= to switch between versions of Ruby. This sets a default version
     to use within Emacs (for things like =xmp= or =rspec=).
