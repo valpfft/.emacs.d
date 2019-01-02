@@ -653,7 +653,7 @@
         :ensure t
         :bind
         (:map evil-normal-state-map
-              ("M-p" . counsel-ag)))
+              ("M-p" . counsel-rg)))
     #+END_SRC
 
 ** Projectile
