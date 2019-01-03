@@ -268,14 +268,13 @@
        (global-hl-line-mode))
    #+END_SRC
 
-** Use powerline-evil
+** Use =moody=
    #+BEGIN_SRC emacs-lisp
-     (use-package powerline-evil
-       :ensure t
+     (use-package moody
        :config
-       (custom-set-faces
-         '(powerline-evil-normal-face ((t (:foreground "#eee8d5")))))
-       (powerline-evil-center-color-theme))
+       (setq x-underline-at-descent-line t)
+       (moody-replace-mode-line-buffer-identification)
+       (moody-replace-vc-mode))
    #+END_SRC
 
 ** Hide certain modes from the mode-line
