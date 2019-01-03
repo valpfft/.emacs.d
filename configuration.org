@@ -932,7 +932,7 @@
     #+BEGIN_SRC emacs-lisp
       (setq xmpfilter-command-name
         "ruby -S xmpfilter --no-warnings --dev --fork --detect-rbtest")
-      (require 'rcodetools)
+      (use-package rcodetools :ensure nil)
     #+END_SRC
 
 *** Robe
@@ -1376,6 +1376,12 @@
          :keybinding "y"))
    #+END_SRC
 
+** Edit comments in org-mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package poporg
+       :bind ("C-c M-;" . poporg-dwim))
+   #+END_SRC
+
 * Custom keybindings
   #+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "C-w") 'backward-kill-word)
@@ -1756,7 +1762,6 @@
        (require 'evil-org-agenda)
        (evil-org-agenda-set-keys))
    #+END_SRC
-
 * Extensions
 ** =restclient=
    Useful mode to test API endpoints. Drop-in replacement to the postman
