@@ -528,10 +528,11 @@
      Please don't touch habits.
 
      #+BEGIN_SRC emacs-lisp
-       (defun nist/mark-done-and-archive ()
+       (defun nist/archive-entry ()
          "Mark the state of an org-mode item as DONE and archive it."
          (interactive)
-         (org-todo 'done)
+         (if (string-equal "CANCELED" (org-entry-get nil "TODO"))
+             nil (org-todo 'done))
          (if (string-equal "habit" (org-entry-get nil "STYLE"))
              nil (org-archive-subtree)))
      #+END_SRC
@@ -1428,7 +1429,7 @@
      (global-set-key (kbd "C-c t a") 'nist/pop-to-org-agenda)
 
      (define-key org-mode-map (kbd "C-c C-x C-s")
-       'nist/mark-done-and-archive)
+       'nist/archive-entry)
    #+END_SRC
 
 ** Display preferences
