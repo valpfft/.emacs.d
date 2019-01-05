@@ -316,6 +316,8 @@
        :bind
        ("M-x" . 'counsel-M-x)
        ("C-s" . 'swiper)
+       (:map evil-normal-state-map
+            ("M-p" . 'counsel-rg))
        :config
        (use-package flx)
        (use-package smex)
@@ -615,14 +617,6 @@
         :config (setq company-quickhelp-mode t))
     #+END_SRC
 
-*** =ag= aka silver searcher
-    #+BEGIN_SRC emacs-lisp
-      (use-package ag
-        :ensure t
-        :bind
-        (:map evil-normal-state-map
-              ("M-p" . counsel-rg)))
-    #+END_SRC
 
 ** Projectile
    #+BEGIN_SRC emacs-lisp
@@ -636,7 +630,6 @@
        :init (projectile-global-mode)
        :bind-keymap ("C-c p" . projectile-command-map)
        :bind
-       ("C-c v" . 'projectile-ag)
        ("C-c C-v" . 'nist/search-project-for-symbol-at-point)
        :config
        (setq projectile-require-project-root nil)
