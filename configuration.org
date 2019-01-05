@@ -316,8 +316,7 @@
        :bind
        ("M-x" . 'counsel-M-x)
        ("C-s" . 'swiper)
-       (:map evil-normal-state-map
-            ("M-p" . 'counsel-rg))
+       ("M-p" . 'counsel-rg)
        :config
        (use-package flx)
        (use-package smex)
@@ -616,7 +615,6 @@
         :init (company-quickhelp-mode t)
         :config (setq company-quickhelp-mode t))
     #+END_SRC
-
 
 ** Projectile
    #+BEGIN_SRC emacs-lisp
@@ -1178,6 +1176,21 @@
      (use-package graphviz-dot-mode
        :ensure t
        :mode "dot")
+   #+END_SRC
+** systemd services
+   #+BEGIN_SRC emacs-lisp
+     (use-package systemd)
+   #+END_SRC
+** Docker
+   #+BEGIN_SRC emacs-lisp
+     (use-package docker
+       :bind ("C-c d" . docker)
+       :config
+       (setq docker-images-default-sort-key ("Created" . t))
+       (setq docker-containers-default-sort-key ("Status" . t)))
+     (use-package dockerfile-mode)
+     (use-package docker-compose-mode)
+     (use-package docker-tramp)
    #+END_SRC
 
 * Editing preferences
