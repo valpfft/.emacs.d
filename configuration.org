@@ -634,6 +634,7 @@
      (use-package projectile
        :ensure t
        :init (projectile-global-mode)
+       :bind-keymap ("C-c p" . projectile-command-map)
        :bind
        ("C-c v" . 'projectile-ag)
        ("C-c C-v" . 'nist/search-project-for-symbol-at-point)
