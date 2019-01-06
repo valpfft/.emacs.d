@@ -1398,6 +1398,45 @@
            ad-do-it)))
    #+END_SRC
 
+** Natural text linting
+*** Use [[https://github.com/textlint/textlint][textlint]] to lint natural text
+   #+BEGIN_SRC emacs-lisp
+     (flycheck-define-checker textlint
+       "A linter for textlint."
+       :command ("npx" "textlint"
+                 "--config" "~/.emacs.d/.textlintrc"
+                 "--format" "unix"
+                 "--rule" "write-good"
+                 "--rule" "no-start-duplicated-conjunction"
+                 "--rule" "max-comma"
+                 "--rule" "terminology"
+                 "--rule" "period-in-list-item"
+                 "--rule" "abbr-within-parentheses"
+                 "--rule" "alex"
+                 "--rule" "common-misspellings"
+                 "--rule" "en-max-word-count"
+                 "--rule" "diacritics"
+                 "--rule" "stop-words"
+                 "--plugin"
+                 (eval
+                  (if (derived-mode-p 'text-mode)
+                      "latex"
+                    "@textlint/text"))
+                 source-inplace)
+       :error-patterns
+       ((warning line-start (file-name) ":" line ":" column ":"
+                 (message (one-or-more not-newline)
+                          (zero-or-more "\n" (any " ") (one-or-more not-newline)))
+                 line-end))
+       :modes (text-mode latex-mode org-mode markdown-mode))
+     (add-to-list 'flycheck-checkers 'textlint)
+   #+END_SRC
+*** Use =powerthesaurus= to find synonyms
+    #+BEGIN_SRC emacs-lisp
+      (use-package powerthesaurus
+        :bind ("C-x w" . powerthesaurus-lookup-word-dwim))
+    #+END_SRC
+
 * Custom keybindings
   #+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "C-w") 'backward-kill-word)
