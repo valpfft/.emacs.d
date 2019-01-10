@@ -107,7 +107,6 @@
     (setq-default save-place t)
    #+END_SRC
 
-** Fonts
 ** Which-key
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
@@ -120,6 +119,14 @@
        (which-key-mode))
    #+END_SRC
 
+** Which-function
+   #+BEGIN_SRC emacs-lisp
+     (use-package which-func
+       :ensure t
+       :init)
+   #+END_SRC
+
+** Fonts
 *** Set default font
     #+BEGIN_SRC emacs-lisp
       (setq nist/default-font "Iosevka")
@@ -165,13 +172,6 @@
 
       (nist/reset-font-size)
     #+END_SRC
-
-** Which-function
-   #+BEGIN_SRC emacs-lisp
-     (use-package which-func
-       :ensure t
-       :init)
-   #+END_SRC
 
 ** Disable window chrome
    #+BEGIN_SRC emacs-lisp
