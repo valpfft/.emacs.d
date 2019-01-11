@@ -1095,6 +1095,12 @@
       (use-package nginx-mode
         :commands (nginx-mode))
     #+END_SRC
+*** Caddy
+    #+BEGIN_SRC emacs-lisp
+      (use-package caddyfile-mode
+        :mode (("Caddyfile\\" . caddyfile-mode)
+               ("caddy\\.conf\\" . caddyfile-mode)))
+    #+END_SRC
 
 *** JSON
     #+BEGIN_SRC emacs-lisp
