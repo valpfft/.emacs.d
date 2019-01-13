@@ -567,16 +567,6 @@
        "Pop to the default agenda in a split window unless NOSPLIT."
        (interactive "P")
        (nist/pop-to-org-agenda-view "d" (not nosplit)))
-
-     (defun nist/pop-to-org-agenda-review (&optional nosplit)
-       "Pop to the default agenda in a split window unless NOSPLIT."
-       (interactive "P")
-       (nist/pop-to-org-agenda-view "r" (not nosplit)))
-
-     (defun nist/pop-to-org-agenda-home (&optional nosplit)
-       "Pop to the default agenda in a split window unless NOSPLIT."
-       (interactive "P")
-       (nist/pop-to-org-agenda-view "h" (not nosplit)))
    #+END_SRC
 
 ** Skip habits in agenda view
@@ -1604,8 +1594,6 @@
      (global-set-key (kbd "C-c i") 'nist/open-index-file)
      (global-set-key (kbd "M-n") 'nist/org-capture-todo)
      (global-set-key (kbd "C-c t a") (lambda () (interactive) (nist/pop-to-org-agenda-default t)))
-     (global-set-key (kbd "C-c t r") 'nist/pop-to-org-agenda-review)
-     (global-set-key (kbd "C-c t h") 'nist/pop-to-org-agenda-home)
 
      (define-key org-mode-map (kbd "C-c C-x C-s")
        'nist/archive-entry)
