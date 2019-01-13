@@ -908,6 +908,8 @@
         :hook (dired-mode . rspec-dired-mode)
         :config
         (with-eval-after-load 'yasnippet (rspec-install-snippets))
+        (setq rspec-use-spring-when-possible nil)
+        (setq rspec-use-bundler-when-possible t)
         (add-hook 'rspec-compilation-mode-hook
                   (lambda ()
                     (chruby-use-corresponding)
@@ -1098,8 +1100,8 @@
 *** Caddy
     #+BEGIN_SRC emacs-lisp
       (use-package caddyfile-mode
-        :mode (("Caddyfile\\" . caddyfile-mode)
-               ("caddy\\.conf\\" . caddyfile-mode)))
+        :mode (("Caddyfile\\'" . caddyfile-mode)
+               ("caddy\\.conf\\'" . caddyfile-mode)))
     #+END_SRC
 
 *** JSON
@@ -1518,14 +1520,14 @@
      (setq org-agenda-files (list org-index-file
                                   "~/Dropbox/org/payments.org"
                                   "~/Dropbox/org/habits.org"
-                                  "~/Dropbox/org/couple.org"))
+                                  "~/Dropbox/org/index.org"))
    #+END_SRC
 *** Start agenda in =normal= mode
     #+BEGIN_SRC emacs-lisp
       (eval-after-load 'org-agenda
         '(progn (evil-set-initial-state 'org-agenda-mode 'normal)))
     #+END_SRC
-*** Leave agenda =q=
+*** Leave agenda with =q=
     #+BEGIN_SRC emacs-lisp
       (evil-define-key 'normal org-agenda-mode-map
         "q" 'org-agenda-quit)
@@ -1694,16 +1696,16 @@
 ** Calendar holidays
    #+BEGIN_SRC emacs-lisp
      (setq calendar-holidays
-           '((holiday-fixed 1 1 "New Year")
-             (holiday-fixed 1 6 "Trzech Króli")
-             (holiday-fixed 4 1 "Wielkanoc")
-             (holiday-fixed 4 2 "Poniedziałek Wielkanocny")
-             (holiday-fixed 5 1 "Swięto pracy")
-             (holiday-fixed 5 3 "Swięto konstytucji")
-             (holiday-fixed 5 20 "Zesłanie Ducha Świętego (Zielone Świątki)")
-             (holiday-fixed 5 31 "Boże Ciało")
-             (holiday-fixed 8 15 "Święto Wojska Polskiego")
-             (holiday-fixed 11 1 "Wszystkich Świętych")
+           '((holiday-fixed 1 1   "New Year")
+             (holiday-fixed 1 6   "Trzech Króli")
+             (holiday-fixed 4 21  "Wielkanoc")
+             (holiday-fixed 4 22  "Poniedziałek Wielkanocny")
+             (holiday-fixed 5 1   "Swięto pracy")
+             (holiday-fixed 5 3   "Swięto konstytucji")
+             (holiday-fixed 6 9   "Zesłanie Ducha Świętego (Zielone Świątki)")
+             (holiday-fixed 6 20  "Boże Ciało")
+             (holiday-fixed 8 15  "Święto Wojska Polskiego")
+             (holiday-fixed 11 1  "Wszystkich Świętych")
              (holiday-fixed 11 11 "Święto Niepodległości")
              (holiday-fixed 12 25 "Boże Narodzenie (pierwszy dzień)")
              (holiday-fixed 12 26 "Boże Narodzenie (drugi dzień)")))
