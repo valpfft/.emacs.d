@@ -1545,6 +1545,7 @@
 *** Feed agenda with following files
    #+BEGIN_SRC emacs-lisp
      (setq org-agenda-files (list org-index-file
+                                  "~/Dropbox/org/shop.org"
                                   "~/Dropbox/org/payments.org"
                                   "~/Dropbox/org/habits.org"))
    #+END_SRC
@@ -1810,6 +1811,12 @@
        (setq org-todo-keywords
              '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")))
      #+END_SRC
+
+     Require org-protocol
+     #+BEGIN_SRC emacs-lisp
+       (require 'org-protocol)
+     #+END_SRC
+
 **** Capture templates
      #+BEGIN_SRC emacs-lisp
        (setq org-capture-templates
@@ -1888,6 +1895,14 @@
      (use-package interleave
        :ensure t)
    #+END_SRC
+** =wakatime=
+   #+BEGIN_SRC emacs-lisp
+     (use-package wakatime-mode
+       :defer t
+       :config
+       (global-wakatime-mode))
+   #+END_SRC
+
 * Shortcuts
 ** Emacs config
    #+BEGIN_SRC emacs-lisp
