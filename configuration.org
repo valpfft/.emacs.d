@@ -1538,7 +1538,9 @@
        (setq org-directory "~/Dropbox/org/")
        (setq org-index-file "~/Dropbox/org/index.org")
        (setq org-archive-location
-             (concat "~/Dropbox/archive.org" "::* From %s")))
+             (concat "~/Dropbox/archive.org" "::* From %s"))
+       (setq org-clock-persist t)
+       (org-clock-persistence-insinuate))
    #+END_SRC
 
 ** Agenda
@@ -1873,6 +1875,14 @@
        (require 'evil-org-agenda)
        (evil-org-agenda-set-keys))
    #+END_SRC
+** Timetracking
+*** Yeasily select latest entries
+   #+BEGIN_SRC emacs-lisp
+     (use-package org-mru-clock
+       :bind* (("C-c C-x i" . org-mru-clock-in)
+               ("C-c C-x C-j" . org-mru-clock-select-recent-task)))
+   #+END_SRC
+
 * Extensions
 ** =restclient=
    Useful mode to test API endpoints. Drop-in replacement to the postman
