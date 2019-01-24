@@ -644,6 +644,19 @@
         :config (setq company-quickhelp-mode t))
     #+END_SRC
 
+*** =lsp-mode=
+    #+BEGIN_SRC emacs-lisp
+      (use-package lsp-mode
+        :config
+        (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+        (add-hook 'prog-mode-hook #'lsp)
+        (setq lsp-auto-guess-root t))
+
+      (use-package company-lsp
+        :config
+        (push 'company-lsp company-backends))
+    #+END_SRC
+
 ** Projectile
    #+BEGIN_SRC emacs-lisp
      (defun nist/search-project-for-symbol-at-point ()
@@ -1604,9 +1617,7 @@
      (global-set-key (kbd "C-c i") 'nist/open-index-file)
      (global-set-key (kbd "M-n") 'nist/org-capture-todo)
      (global-set-key (kbd "C-c t a") (lambda () (interactive) (nist/pop-to-org-agenda-default t)))
-
-     (define-key org-mode-map (kbd "C-c C-x C-s")
-       'nist/archive-entry)
+     (define-key org-mode-map (kbd "C-c C-x C-s") 'nist/archive-entry)
    #+END_SRC
 
 ** Display preferences
