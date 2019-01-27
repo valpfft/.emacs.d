@@ -124,10 +124,10 @@
 ** Fonts
 *** Set default font
     #+BEGIN_SRC emacs-lisp
-      (setq nist/default-font "Dejavu Sans Mono")
+      (setq nist/default-font "Iosevka")
       (setq nist/default-font-size 15)
       (setq nist/current-font-size nist/default-font-size)
-      (setq default-frame-alist '((font . "Dejavu Sans Mono-15")))
+      (setq default-frame-alist '((font . "Iosevka-15")))
     #+END_SRC
 
 *** Handle resizing
