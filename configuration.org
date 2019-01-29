@@ -90,6 +90,14 @@
      (setq column-number-mode t)
    #+END_SRC
 
+** Automatically resize buffers using =golden-ratio= package
+   #+BEGIN_SRC emacs-lisp
+     (use-package golden-ratio
+       :init
+       (golden-ratio-mode t)
+       (setq golden-ratio-auto-scale t))
+   #+END_SRC
+
 ** Disable large file warning (> 100MB)
    #+BEGIN_SRC emacs-lisp
      (setq large-file-warning-threshold 100000000)
