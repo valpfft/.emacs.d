@@ -318,7 +318,6 @@
        :bind
        ("M-x" . 'counsel-M-x)
        ("C-s" . 'swiper)
-       ("M-p" . 'counsel-rg)
        :config
        (use-package flx)
        (use-package smex)
@@ -603,6 +602,19 @@
            (goto-char (point-min))
            (unless (looking-at "^# frozen_string_literal: true")
              (insert "# frozen_string_literal: true\n\n")))))
+   #+END_SRC
+
+** Hide minibuffer in Helm session if we use the header line as input field.
+   #+BEGIN_SRC emacs-lisp
+     (defun spacemacs//helm-hide-minibuffer-maybe ()
+       "Hide minibuffer in Helm session if we use the header line as input field."
+       (when (with-helm-buffer helm-echo-input-in-header-line)
+         (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+           (overlay-put ov 'window (selected-window))
+           (overlay-put ov 'face
+                        (let ((bg-color (face-background 'default nil)))
+                          `(:background ,bg-color :foreground ,bg-color)))
+           (setq-local cursor-type nil))))
    #+END_SRC
 
 * Programming
@@ -1464,6 +1476,41 @@
            ad-do-it)))
    #+END_SRC
 
+** Use =helm=
+   #+BEGIN_SRC emacs-lisp
+     (use-package helm-config)
+
+     (use-package helm
+       :after helm-config
+       :bind
+       (("C-c h" . helm-command-prefix)
+        ("M-y" . helm-show-kill-ring)
+        ("M-p" . helm-do-grep-ag)
+        :map helm-map
+        ("<tab>" . helm-execute-persistent-action)
+        ("C-z" . helm-select-action)
+        )
+       :config
+       (global-unset-key (kbd "C-x c"))
+       (setq helm-buffers-fuzzy-matching t
+             helm-recentf-fuzzy-match t)
+       (setq helm-autoresize-mode t)
+       (setq helm-buffer-max-length 40)
+       (setq helm-google-suggest-use-curl-p t)
+       (setq helm-split-window-in-side-p t
+             helm-move-to-line-cycle-in-source t
+             helm-ff-search-library-in-sexp t
+             helm-ff-file-name-history-use-recentf t
+             helm-echo-input-in-header-line t)
+
+       (setq helm-grep-ag-command
+             "rg --color=always --smart-case --no-heading --line-number %s %s %s")
+       (setq helm-autoresize-max-height 0
+             helm-autoresize-min-height 30
+             helm-autoresize-mode 1)
+       (add-hook 'helm-minibuffer-set-up-hook 'spacemacs//helm-hide-minibuffer-maybe))
+   #+END_SRC
+
 ** Natural text linting
 *** Use [[https://github.com/textlint/textlint][textlint]] to lint natural text
    #+BEGIN_SRC emacs-lisp
@@ -2034,7 +2081,6 @@
 
      (add-to-list 'flycheck-checkers 'ledger)
    #+END_SRC
-
 
 * Shortcuts
 ** Emacs config
