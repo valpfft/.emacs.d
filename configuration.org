@@ -132,10 +132,10 @@
 ** Fonts
 *** Set default font
     #+BEGIN_SRC emacs-lisp
-      (setq nist/default-font "DejaVu Sans Mono")
+      (setq nist/default-font "Dejavu Sans Mono")
       (setq nist/default-font-size 15)
       (setq nist/current-font-size nist/default-font-size)
-      (setq default-frame-alist '((font . "DejaVu Sans Mono-15")))
+      (setq default-frame-alist '((font . "Dejavu Sans Mono-15")))
     #+END_SRC
 
 *** Handle resizing
@@ -653,6 +653,7 @@
         :ensure t
         :defer t
         :init (global-company-mode)
+        :bind ("TAB" . company-complete-section)
         :config
         (progn
           (bind-key [remap completion-at-point] #'company-complete company-mode-map)
@@ -667,6 +668,14 @@
       (use-package company-quickhelp
         :init (company-quickhelp-mode t)
         :config (setq company-quickhelp-mode t))
+    #+END_SRC
+
+    Tabnine integration
+    #+BEGIN_SRC emacs-lisp
+      (use-package company-tabnine
+        :after company
+        :config
+        (add-to-list 'company-backends #'company-tabnine))
     #+END_SRC
 
 *** =lsp-mode=
@@ -1660,7 +1669,7 @@
       (setq shell-pop-shell-type
             (quote ("multi-term" "*multi-term*"
                     (lambda nil (ansi-term shell-pop-term-shell)))))
-      (setq shell-pop-term-shell "/bin/bash")
+      (setq shell-pop-term-shell "/bin/fish")
       (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type))
   #+END_SRC
 
@@ -2076,7 +2085,7 @@
 
      (defun nist/visit-ledger-journal ()
        (interactive)
-       (find-file "~/Dropbox/ledger/journal-2019.ledger"))
+       (find-file "~/Dropbox/ledger/journal.ledger"))
 
      (global-set-key (kbd "C-c t l") 'nist/visit-ledger-journal)
 
