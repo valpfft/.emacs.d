@@ -1400,7 +1400,7 @@
    #+END_SRC
 
 ** Always indent with spaces
-   Never use tabs. (except Go) ;D
+   Never use tabs. (except Go & Rust) ;D
 
    #+BEGIN_SRC emacs-lisp
      (setq-default indent-tabs-mode nil)
@@ -1669,7 +1669,7 @@
       (setq shell-pop-shell-type
             (quote ("multi-term" "*multi-term*"
                     (lambda nil (ansi-term shell-pop-term-shell)))))
-      (setq shell-pop-term-shell "/bin/fish")
+      (setq shell-pop-term-shell "/bin/zsh")
       (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type))
   #+END_SRC
 
