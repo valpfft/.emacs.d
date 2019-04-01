@@ -617,6 +617,22 @@
            (setq-local cursor-type nil))))
    #+END_SRC
 
+** Eval expression at point in =calc=
+   #+BEGIN_SRC emacs-lisp
+     (defun nist/calc-eval ()
+       "Calculate match expression on current line using calc-eval"
+       (interactive)
+       (setq cLine
+             (buffer-substring-no-properties
+              (line-beginning-position)
+              (line-end-position)))
+       (save-excursion
+         (end-of-line)
+         (open-line 1))
+       (forward-line 1)
+       (insert (calc-eval '("evalv($)" calc-internal-prec 18) 'num cLine)))
+   #+END_SRC
+
 * Programming
 ** Common
 *** Default tab width
@@ -1639,6 +1655,7 @@
     (global-set-key (kbd "M-/") 'hippie-expand)
     (global-set-key (kbd "M-o") 'other-window)
     (global-set-key (kbd "M-#") 'sort-lines)
+    (global-set-key (kbd "C-c v c") 'nist/calc-eval)
   #+END_SRC
 
 * Terminal
