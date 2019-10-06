@@ -1862,6 +1862,11 @@
     #+END_SRC
 
 *** =babel= evaluating customization
+    Asynchronous execution
+    #+BEGIN_SRC emacs-lisp
+      (use-package ob-async :ensure t)
+    #+END_SRC
+
     Prety useful for course/book notes.
     Also add non-standard go loader
 
