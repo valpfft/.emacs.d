@@ -1,6 +1,12 @@
 #+TITLE: Emacs configuration
 
 * Defaults
+** Whitelist local variables
+   #+begin_src emacs-lisp
+     (add-to-list 'safe-local-variable-values '(rubocop-autocorrect-command . "docker-compose run --rm runner bundle exec rubocop -a"))
+     (add-to-list 'safe-local-variable-values '(rubocop-check-command . "docker-compose run --rm runner bundle exec rubocop --format emacs"))
+   #+end_src
+
 ** Add resources to load path
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'load-path "~/.emacs.d/resources/")
@@ -204,20 +210,20 @@
    Install theme
 
    #+BEGIN_SRC emacs-lisp
-          (use-package solarized-theme
-            :defer t
-            :config
-            (setq solarized-use-variable-pitch nil)
-            (setq solarized-height-plus-1 1.0)
-            (setq solarized-height-plus-2 1.0)
-            (setq solarized-height-plus-3 1.0)
-            (setq solarized-height-plus-4 1.0)
-            (setq solarized-high-contrast-mode-line t)
-            (if (daemonp)
-                (add-hook 'after-make-frame-functions
-                          (lambda (frame)
-                            (with-selected-frame frame (nist/apply-solorized-dark-theme))))
-              (nist/apply-solorized-dark-theme)))
+     (use-package solarized-theme
+       :defer t
+       :config
+       (setq solarized-use-variable-pitch nil)
+       (setq solarized-height-plus-1 1.0)
+       (setq solarized-height-plus-2 1.0)
+       (setq solarized-height-plus-3 1.0)
+       (setq solarized-height-plus-4 1.0)
+       (setq solarized-high-contrast-mode-line t)
+       (if (daemonp)
+           (add-hook 'after-make-frame-functions
+                     (lambda (frame)
+                       (with-selected-frame frame (nist/apply-solorized-dark-theme))))
+         (nist/apply-solorized-dark-theme)))
    #+END_SRC
 
    Setup
@@ -226,10 +232,11 @@
      (defun nist/apply-solorized-dark-theme ()
        "Apply the `solorized-dark` theme"
        (interactive)
-       (load-theme 'solarized-dark t))
+       (load-theme 'solarized-dark t)
+       (nist/apply-transparency 90))
    #+END_SRC
 
-	 Apply theme
+   Apply theme
 
 	 #+BEGIN_SRC emacs-lisp
 	   (if (daemonp)
@@ -569,6 +576,10 @@
        (interactive "P")
        (nist/pop-to-org-agenda-view "d" (not nosplit)))
    #+END_SRC
+
+** Open org file                                                        :org:
+   #+begin_src emacs-lisp
+   #+end_src
 
 ** Skip habits in agenda view
    #+BEGIN_SRC emacs-lisp
@@ -967,7 +978,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package chruby
         :config
-        (chruby "2.6.0"))
+        (chruby "2.6.5"))
     #+END_SRC
 
 *** Eval into comments
@@ -975,9 +986,12 @@
     display the result in "magic" (=# =>=) comments.
 
     #+BEGIN_SRC emacs-lisp
-      (setq xmpfilter-command-name
-        "ruby -S xmpfilter --no-warnings --dev --fork --detect-rbtest")
-      (use-package rcodetools :ensure nil)
+      (use-package seeing-is-believing
+        :config
+        (add-hook 'ruby-mode-hook 'seeing-is-believing)
+        :init
+        (setq seeing-is-believing-prefix "C-c C-c"
+              seeing-is-believing-timeout 5.0))
     #+END_SRC
 
 *** Robe
@@ -1064,6 +1078,7 @@
     #+BEGIN_SRC emacs-lisp
       (add-hook 'ruby-mode-hook
                 (lambda ()
+                  (chruby-use-corresponding)
                   (setq ruby-insert-encoding-magic-comment nil)
                   (yas-minor-mode)
                   (rspec-mode)
@@ -1076,7 +1091,6 @@
                   (subword-mode)
                   (local-set-key "\r" 'newline-and-indent)
                   (setq rspec-command-options "--color --order random")
-                  (define-key ruby-mode-map (kbd "C-c C-c") 'xmp)
                   (define-key ruby-mode-map (kbd "C-c r a") 'rspec-verify)
                   (define-key ruby-mode-map (kbd "C-c r r") 'rspec-verify-matching)
                   (define-key evil-normal-state-local-map "%" 'evil-ruby-jump-item)
@@ -1214,10 +1228,14 @@
 ** =dumb-jump=
    #+BEGIN_SRC emacs-lisp
      (use-package dumb-jump
-       :config
        :after evil
-         (define-key evil-normal-state-map (kbd "M-.") 'dumb-jump-go)
-         (setq dumb-jump-selector 'ivy))
+       :config
+       (setq dumb-jump-selector 'ivy)
+       (define-key evil-normal-state-map (kbd "M-.") 'dumb-jump-go)
+       (define-key evil-normal-state-map (kbd "M-,") 'dumb-jump-back)
+       :init
+       (dumb-jump-mode)
+       :ensure)
    #+END_SRC
 
 ** Rust
@@ -2042,6 +2060,7 @@
      #+BEGIN_SRC emacs-lisp
        (setq org-log-done 'time)
      #+END_SRC
+
 
 ** Use =evil= with Org agendas
    #+BEGIN_SRC emacs-lisp
