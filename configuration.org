@@ -2157,11 +2157,6 @@
              '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")))
      #+END_SRC
 
-     Require org-protocol
-     #+BEGIN_SRC emacs-lisp
-       (require 'org-protocol)
-     #+END_SRC
-
 **** Capture templates
      #+BEGIN_SRC emacs-lisp
        (setq org-capture-templates
@@ -2188,14 +2183,7 @@
                ("t" "Todo"
                 entry
                 (file+headline org-index-file "Tasks")
-                "* TODO %?\nSCHEDULED: %^T")
-
-               ("p" "Protocol" entry (file+headline (lambda () (nist/org-directory-file "refile.org")) "Inbox")
-                "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-
-               ("L" "Protocol Link" entry (file+headline (lambda () (nist/org-directory-file "refile.org")) "Inbox")
-                "* %? [[%:link][%:description]] \nCaptured On: %U")
-               ))
+                "* TODO %?\nSCHEDULED: %^T")))
      #+END_SRC
 
 **** Add a timestamp to archived items
