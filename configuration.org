@@ -195,29 +195,8 @@
        (set-frame-parameter (selected-frame) 'alpha value))
    #+END_SRC
 
-   Install theme
-
    #+BEGIN_SRC emacs-lisp
-     (use-package solarized-theme
-       :defer t
-       :config
-       ;; (setq solarized-use-variable-pitch nil)
-       ;; (setq solarized-height-plus-1 1.0)
-       ;; (setq solarized-height-plus-2 1.0)
-       ;; (setq solarized-height-plus-3 1.0)
-       ;; (setq solarized-height-plus-4 1.0)
-       (setq solarized-high-contrast-mode-line t)
-       (if (daemonp)
-           (add-hook 'after-make-frame-functions
-                     (lambda (frame)
-                       (with-selected-frame frame (nist/apply-solorized-dark-theme))))
-         (nist/apply-solorized-dark-theme)))
-   #+END_SRC
-
-   Setup
-
-   #+BEGIN_SRC emacs-lisp
-     (defun nist/apply-solorized-dark-theme ()
+     (defun nist/apply-theme ()
        "Apply the `solorized-dark` theme"
        (interactive)
        (load-theme 'doom-nord-light t))
@@ -229,8 +208,8 @@
      (if (daemonp)
          (add-hook 'after-make-frame-functions
        (lambda (frame)
-         (with-selected-frame frame (nist/apply-solorized-dark-theme))))
-       (nist/apply-solorized-dark-theme))
+         (with-selected-frame frame (nist/apply-theme))))
+       (nist/apply-theme))
 	 #+END_SRC
 
 ** Smooth scrolling
@@ -295,7 +274,7 @@
 *** External one
     #+BEGIN_SRC emacs-lisp
       (setq browse-url-browser-function 'browse-url-generic
-            browse-url-generic-program "chromium")
+            browse-url-generic-program "firefox")
     #+END_SRC
 
 ** Add stripes to a dired buffer
