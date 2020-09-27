@@ -1723,23 +1723,6 @@
        :bind ("C-c M-;" . poporg-dwim))
    #+END_SRC
 
-** Copy text as slack/github/etc formatted code
-   #+BEGIN_SRC emacs-lisp
-     (use-package copy-as-format
-       :bind
-       (:map mode-specific-map
-             :prefix-map copy-as-format-prefix-map
-             :prefix "y"
-             ("y" . copy-as-format)
-             ("g" . copy-as-format-github)
-             ("j" . copy-as-format-jira)
-             ("m" . copy-as-format-markdown)
-             ("o" . copy-as-format-org-mode)
-             ("s" . copy-as-format-slack))
-       :config
-       (setq copy-as-format-default "slack"))
-   #+END_SRC
-
 ** Advice =beginning-of-line= to point to the first non-whitespace character
    #+BEGIN_SRC emacs-lisp
      (defadvice move-beginning-of-line (around smarter-bol activate)
