@@ -967,6 +967,7 @@
         "\\Vagrantfile$"
         "\\Vagrantfile.local$")
     #+END_SRC
+
 *** Highlight coverage using SimpleCov
     #+BEGIN_SRC emacs-lisp
       (use-package coverage
@@ -976,6 +977,7 @@
           '(evil-ex-define-cmd "cov[coverage]"
                                'coverage-mode)))
     #+END_SRC
+
 ** Shell
    #+BEGIN_SRC emacs-lisp
      (add-hook 'sh-mode-hook
@@ -983,6 +985,7 @@
                  (setq sh-basic-offset 2
                        sh-indentation 2)))
    #+END_SRC
+
 ** Web stuff
    #+BEGIN_SRC emacs-lisp
      (use-package web-mode
@@ -1038,24 +1041,12 @@
                    web-beautify-js-buffer))
     #+END_SRC
 
-*** =emmet=
-    #+BEGIN_SRC emacs-lisp
-      (use-package emmet-mode
-        :bind* (("C-)" . emmet-next-edit-point)
-                ("C-(" . emmet-prev-edit-point))
-        :commands (emmet-mode
-                   emmet-next-edit-point
-                   emmet-prev-edit-point)
-        :init
-        (setq emmet-indentation 2)
-        (setq emmet-move-cursor-between-quotes t)
-        :hook web-mode)
-    #+END_SRC
 *** Nginx
     #+BEGIN_SRC emacs-lisp
       (use-package nginx-mode
         :commands (nginx-mode))
     #+END_SRC
+
 *** Caddy
     #+BEGIN_SRC emacs-lisp
       (use-package caddyfile-mode
@@ -1072,9 +1063,12 @@
 
 ** YAML
    #+BEGIN_SRC emacs-lisp
-     (use-package yaml-mode
-       :ensure t)
+     (use-package k8s-mode
+       :ensure t
+       :mode "\\.yaml"
+       :hook (k8s-mode . yas-minor-mode))
    #+END_SRC
+
 ** =dumb-jump=
    #+BEGIN_SRC emacs-lisp
      (use-package dumb-jump
