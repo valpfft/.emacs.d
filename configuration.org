@@ -1389,13 +1389,6 @@
        :init (save-place-mode t))
    #+END_SRC
 
-** Always indent with spaces
-   Never use tabs. (except Go & Rust) ;D
-
-   #+BEGIN_SRC emacs-lisp
-     (setq-default indent-tabs-mode nil)
-   #+END_SRC
-
 ** Yasnippet
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet
