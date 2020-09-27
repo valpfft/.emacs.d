@@ -99,6 +99,7 @@
 ** Which-key
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
+       :ensure t
        :defer 10
        :config
        (progn
@@ -118,10 +119,17 @@
 ** Fonts
 *** Set default font
     #+BEGIN_SRC emacs-lisp
-      (setq nist/default-font "Dejavu Sans Mono")
+      (setq nist/default-font "Fira Code Retina")
       (setq nist/default-font-size 12)
       (setq nist/current-font-size nist/default-font-size)
-      (setq default-frame-alist '((font . "Dejavu Sans Mono-12")))
+      (setq default-frame-alist '((font . "Fira Code Retina-13")))
+    #+END_SRC
+
+*** Enable ligatures!
+    #+BEGIN_SRC emacs-lisp
+      (use-package fira-code-mode
+        ;; :custom (fira-code-mode-disabled-ligatures '("[]" "x"))  ; ligatures you don't want
+        :hook prog-mode)                                         ; mode to enable fira-code-mode in
     #+END_SRC
 
 *** Handle resizing
