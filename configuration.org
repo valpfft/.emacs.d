@@ -2117,14 +2117,6 @@
                                  (append '(("\\.x?html?\\'" . "/usr/bin/chromium %s"))))))
    #+END_SRC
 
-** Open compiled PDFs in =zathura= instead of in the Emacs.
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'org-mode-hook
-               '(lambda ()
-                  (delete '("\\.pdf\\'" . default) org-file-apps)
-                  (add-to-list 'org-file-apps '("\\.pdf\\'" . "zathura %s"))))
-   #+END_SRC
-
 ** Quickly explore my =notes= directory with =deft=
    #+BEGIN_SRC emacs-lisp
      (use-package deft
