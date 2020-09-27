@@ -1061,14 +1061,6 @@
                 ("}" . paredit-close-curly)))
     #+END_SRC
 
-** YAML
-   #+BEGIN_SRC emacs-lisp
-     (use-package k8s-mode
-       :ensure t
-       :mode "\\.yaml"
-       :hook (k8s-mode . yas-minor-mode))
-   #+END_SRC
-
 ** =dumb-jump=
    #+BEGIN_SRC emacs-lisp
      (use-package dumb-jump
@@ -1370,10 +1362,10 @@
      (use-package k8s-mode
        :ensure t
        :hook (k8s-mode . yas-minor-mode)
+       :mode "\\.yaml"
        :bind
        ("C-\\" . 'base64-decode-region)
-       ("C-|" . 'base64-encode-region)
-       )
+       ("C-|" . 'base64-encode-region))
    #+end_src
 
 * Editing preferences
