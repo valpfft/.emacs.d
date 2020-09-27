@@ -83,11 +83,6 @@
   #+END_SRC
 
  User interface preferences
-** Show column numbers
-   #+BEGIN_SRC emacs-lisp
-     (setq column-number-mode t)
-   #+END_SRC
-
 ** Automatically resize buffers using =golden-ratio= package
    #+BEGIN_SRC emacs-lisp
      (use-package golden-ratio
