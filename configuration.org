@@ -717,12 +717,6 @@
                    )))
 	 #+End_SRC
 
-** JavaScript
-*** VueJS
-    #+BEGIN_SRC emacs-lisp
-      (use-package vue-mode)
-    #+END_SRC
-
 ** Lisps
 
 	 Install required packages
