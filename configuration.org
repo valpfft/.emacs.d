@@ -718,7 +718,6 @@
 	 #+End_SRC
 
 ** Lisps
-
 	 Install required packages
 
 	 #+BEGIN_SRC emacs-lisp
@@ -748,13 +747,9 @@
 	 #+BEGIN_SRC emacs-lisp
 		 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 	 #+END_SRC
+
 ** Python
 	 More - [[https://github.com/howardabrams/dot-files/blob/master/emacs-python.org][in this tutorial]]
-
-	 Indent 2 spaces.
-	 #+BEGIN_SRC emacs-lisp
-	   (setq python-indent 2)
-	 #+END_SRC
 
 	 Virtualenv
 
@@ -826,6 +821,7 @@
 			 :bind (:map elpy-mode-map ([remap elpy-goto-definition] .
 																	ha/elpy-goto-definition)))
 	 #+END_SRC
+
 ** Ruby
 *** Disable the ruby-reek cheker.
 
@@ -868,30 +864,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package chruby
         :config
-        (chruby "2.6.5"))
-    #+END_SRC
-
-*** Eval into comments
-    =rcodetools= provides =xmp=, which lets us evaluate a Ruby buffer and
-    display the result in "magic" (=# =>=) comments.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package seeing-is-believing
-        :config
-        (add-hook 'ruby-mode-hook 'seeing-is-believing)
-        :init
-        (setq seeing-is-believing-prefix "C-c C-c"
-              seeing-is-believing-timeout 5.0))
-    #+END_SRC
-
-*** Robe
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package robe
-        :ensure t
-        :bind ("C-M-." . robe-jump)
-        :init
-        (add-hook 'ruby-mode-hook 'robe-mode))
+        (chruby "2.7.1"))
     #+END_SRC
 
 *** RSpec
@@ -911,18 +884,6 @@
                     (make-local-variable 'compilation-scroll-output)
                     (setq compilation-scroll-output 'first-error)))
         :ensure t)
-    #+END_SRC
-
-*** Features (Cucumber)
-    #+BEGIN_SRC emacs-lisp
-      (use-package feature-mode
-        :ensure t
-        :after ruby-mode
-        :bind ("C-c ." . feature-goto-step-definition)
-        :config
-        (add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
-        (setq feature-default-language "fi")
-        (setq feature-step-search-path "features/step_definitions/*_steps.rb"))
     #+END_SRC
 
 *** Rubocop
@@ -956,12 +917,6 @@
                (evil-jump-item count))))
     #+END_SRC
 
-*** =yard-mode=
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package yard-mode :ensure t)
-    #+END_SRC
-
 *** =inf-ruby-mode=
 
     #+begin_src emacs-lisp
@@ -982,13 +937,11 @@
                   (setq ruby-insert-encoding-magic-comment nil)
                   (yas-minor-mode)
                   (rspec-mode)
-                  (yard-mode)
                   (flycheck-mode)
                   (flycheck-disable-checker 'ruby-rubylint)
                   (flymake-mode-off)
                   (evil-smartparens-mode)
                   (smartparens-strict-mode)
-                  (inf-ruby-minor-mode)
                   (subword-mode)
                   (local-set-key "\r" 'newline-and-indent)
                   (setq rspec-command-options "--color --order random")
@@ -997,10 +950,6 @@
                   (define-key evil-normal-state-local-map "%" 'evil-ruby-jump-item)
                   (define-key evil-motion-state-local-map "%" 'evil-ruby-jump-item)
                   (add-hook 'ruby-mode-hook 'ruby-refactor-mode-launch)))
-
-      (eval-after-load 'evil-ex
-        '(evil-ex-define-cmd "fs[insert frozen string literal comment]"
-                             'nist/ruby-mode-insert-frozen-string-literal))
     #+END_SRC
 
     Associate with a following files
