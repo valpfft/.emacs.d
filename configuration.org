@@ -1404,18 +1404,6 @@
        :after yasnippet)
    #+end_src
 
-** Configure =abbrev-mode=
-   My name and email is too hard to spell, so I like to keep some personal
-   information as abbreviations.
-
-   #+BEGIN_SRC emacs-lisp
-     (define-abbrev-table 'global-abbrev-table
-       '(("zname" "Valiantsin Mikhaliuk")
-         ("zemail" "valiantsin.mikhaliuk@gmail.com")
-         ("zgithub" "http://github.com/vmikhaliuk")))
-     (setq-default abbrev-mode t)
-   #+END_SRC
-
 ** Configure =ido=
 *** Defaults
     #+BEGIN_SRC emacs-lisp
