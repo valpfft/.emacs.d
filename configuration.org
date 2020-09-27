@@ -8,7 +8,7 @@
 
 ** Search init file for bugs
    #+BEGIN_SRC emacs-lisp
-     (use-package bug-hunter)
+     (use-package bug-hunter :ensure t)
    #+END_SRC
 
 ** Load =sensible-defaults.el= for some basic settings
@@ -186,31 +186,22 @@
    #+END_SRC
 
 ** Theme
-   Setup transparency
-
-   #+BEGIN_SRC emacs-lisp
-     (defun nist/apply-transparency (value)
-       "Sets the transparency of the frame window. 0=transparent/100=opaque."
-       (interactive "nTransparency Value 0 - 100 opaque:")
-       (set-frame-parameter (selected-frame) 'alpha value))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp
-     (defun nist/apply-theme ()
-       "Apply the `solorized-dark` theme"
-       (interactive)
-       (load-theme 'doom-nord-light t))
-   #+END_SRC
-
    Apply theme
+   #+BEGIN_SRC emacs-lisp
+     (use-package doom-themes
+       :config
+       ;; Global settings (defaults)
+       (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+             doom-themes-enable-italic t) ; if nil, italics is universally disabled
+       ;; (load-theme 'doom-one-light t)
 
-	 #+BEGIN_SRC emacs-lisp
-     (if (daemonp)
-         (add-hook 'after-make-frame-functions
-       (lambda (frame)
-         (with-selected-frame frame (nist/apply-theme))))
-       (nist/apply-theme))
-	 #+END_SRC
+       ;; Enable flashing mode-line on errors
+       (doom-themes-visual-bell-config)
+       (doom-themes-org-config))
+
+     (use-package theme-changer
+       :config (change-theme 'doom-one-light 'doom-one))
+   #+END_SRC
 
 ** Smooth scrolling
    #+BEGIN_SRC emacs-lisp
@@ -648,6 +639,7 @@
         (setq lsp-auto-guess-root t))
 
       (use-package company-lsp
+        :ensure t
         :config
         (push 'company-lsp company-backends))
     #+END_SRC
@@ -783,21 +775,6 @@
 			 (setq python-indent-offset 4)
 			 (add-hook 'python-mode-hook 'smartparens-mode))
 	 #+END_SRC
-
-   =jedi= with company-backend
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package jedi
-       :ensure t
-       :init
-       (add-to-list 'company-backends 'company-jedi)
-       :config
-       (use-package company-jedi
-         :ensure t
-         :init
-         (add-hook 'python-mode-hook (lambda () (add-to-list 'company-backends 'company-jedi)))
-         (setq company-jedi-python-bin "python")))
-   #+END_SRC
 
 	 And finally =elpy=
 
@@ -1147,7 +1124,7 @@
               ("C-c C-p"     . cider-eval-print-last-sexp))
 
        :config
-       (use-package slamhound)
+       (use-package slamhound :ensure t)
        (setq org-babel-clojure-backend 'cider))
 
      (defun ha/cider-append-comment ()
@@ -1901,7 +1878,6 @@
        (setq org-log-done 'time)
      #+END_SRC
 
-
 ** Use =evil= with Org agendas
    #+BEGIN_SRC emacs-lisp
      (use-package evil-org
@@ -1928,6 +1904,7 @@
 ** =pdf-tools=
    #+BEGIN_SRC emacs-lisp
      (use-package pdf-tools
+       :ensure t
        :pin manual
        :config
        (pdf-tools-install)
@@ -1935,18 +1912,6 @@
        (setq-default pdf-view-display-size 'fit-width)
        (evil-set-initial-state 'pdf-view-mode 'normal)
        (setq pdf-annot-activate-created-annotations t))
-   #+END_SRC
-
-** =org-pdfview=
-   #+BEGIN_SRC emacs-lisp
-     (use-package org-pdfview
-       :ensure t)
-   #+END_SRC
-
-** =interleave=
-   #+BEGIN_SRC emacs-lisp
-     (use-package interleave
-       :ensure t)
    #+END_SRC
 
 * Shortcuts
