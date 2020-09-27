@@ -1252,202 +1252,110 @@
 
 ** Clojure
    #+begin_src emacs-lisp
-               (use-package clojure-mode
-                 :ensure t
-                 :init
-                 (defconst clojure--prettify-symbols-alist
-                   '(("fn"   . ?λ)
-                     ("__"   . ?⁈)))
+     (use-package clojure-mode
+       :ensure t
+       :init
+       (defconst clojure--prettify-symbols-alist
+         '(("fn"   . ?λ)
+           ("__"   . ?⁈)))
 
-                 :config
-                 (define-clojure-indent
-                   (defroutes 'defun)
-                   (GET 2)
-                   (POST 2)
-                   (PUT 2)
-                   (DELETE 2)
-                   (HEAD 2)
-                   (ANY 2)
-                   (context 2))
-                 (add-hook 'clojure-mode-hook 'global-prettify-symbols-mode)
-                 :bind (("C-c d f" . cider-code)
-                        ("C-c d g" . cider-grimoire)
-                        ("C-c d w" . cider-grimoire-web)
-                        ("C-c d c" . clojure-cheatsheet)
-                        ("C-c d d" . dash-at-point)))
+       :config
+       (define-clojure-indent
+         (defroutes 'defun)
+         (GET 2)
+         (POST 2)
+         (PUT 2)
+         (DELETE 2)
+         (HEAD 2)
+         (ANY 2)
+         (context 2))
+       (add-hook 'clojure-mode-hook 'global-prettify-symbols-mode)
+       :bind (("C-c d f" . cider-code)
+              ("C-c d g" . cider-grimoire)
+              ("C-c d w" . cider-grimoire-web)
+              ("C-c d c" . clojure-cheatsheet)
+              ("C-c d d" . dash-at-point)))
 
-               (use-package color-identifiers-mode
-                 :ensure t
-                 :init
-                 (add-hook 'clojure-mode-hook 'color-identifiers-mode))
+     (use-package color-identifiers-mode
+       :ensure t
+       :init
+       (add-hook 'clojure-mode-hook 'color-identifiers-mode))
 
-               (defun cider-send-and-evaluate-sexp ()
-                 "Sends the s-expression located before the point or the active
-                 region to the REPL and evaluates it. Then the Clojure buffer is
-                 activated as if nothing happened."
-                 (interactive)
-                 (if (not (region-active-p))
-                     (cider-insert-last-sexp-in-repl)
-                   (cider-insert-in-repl
-                    (buffer-substring (region-beginning) (region-end)) nil))
-                 (cider-switch-to-repl-buffer)
-                 (cider-repl-closing-return)
-                 (cider-switch-to-last-clojure-buffer)
-                 (message ""))
+     (defun cider-send-and-evaluate-sexp ()
+       "Sends the s-expression located before the point or the active
+       region to the REPL and evaluates it. Then the Clojure buffer is
+       activated as if nothing happened."
+       (interactive)
+       (if (not (region-active-p))
+           (cider-insert-last-sexp-in-repl)
+         (cider-insert-in-repl
+          (buffer-substring (region-beginning) (region-end)) nil))
+       (cider-switch-to-repl-buffer)
+       (cider-repl-closing-return)
+       (cider-switch-to-last-clojure-buffer)
+       (message ""))
 
-               (use-package cider
-                 :ensure t
-                 :commands (cider cider-connect cider-jack-in)
+     (use-package cider
+       :ensure t
+       :commands (cider cider-connect cider-jack-in)
 
-                 :init
-                 (setq cider-auto-select-error-buffer t
-                       cider-repl-pop-to-buffer-on-connect nil
-                       cider-repl-use-clojure-font-lock t
-                       cider-repl-wrap-history t
-                       cider-repl-history-size 1000
-                       cider-show-error-buffer t
-                       nrepl-hide-special-buffers t
-                       ;; Stop error buffer from popping up while working in buffers other than the REPL:
-                       nrepl-popup-stacktraces nil)
+       :init
+       (setq cider-auto-select-error-buffer t
+             cider-repl-pop-to-buffer-on-connect nil
+             cider-repl-use-clojure-font-lock t
+             cider-repl-wrap-history t
+             cider-repl-history-size 1000
+             cider-show-error-buffer t
+             nrepl-hide-special-buffers t
+             ;; Stop error buffer from popping up while working in buffers other than the REPL:
+             nrepl-popup-stacktraces nil)
 
-                 ;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-                 (add-hook 'cider-mode-hook 'company-mode)
+       ;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+       (add-hook 'cider-mode-hook 'company-mode)
 
-                 (add-hook 'cider-repl-mode-hook 'paredit-mode)
-                 (add-hook 'cider-repl-mode-hook 'superword-mode)
-                 (add-hook 'cider-repl-mode-hook 'company-mode)
-                 (add-hook 'cider-test-report-mode 'jcf-soft-wrap)
+       (add-hook 'cider-repl-mode-hook 'paredit-mode)
+       (add-hook 'cider-repl-mode-hook 'superword-mode)
+       (add-hook 'cider-repl-mode-hook 'company-mode)
+       (add-hook 'cider-test-report-mode 'jcf-soft-wrap)
 
-                 :bind (:map cider-mode-map
-                        ("C-c C-v C-c" . cider-send-and-evaluate-sexp)
-                        ("C-c C-p"     . cider-eval-print-last-sexp))
+       :bind (:map cider-mode-map
+              ("C-c C-v C-c" . cider-send-and-evaluate-sexp)
+              ("C-c C-p"     . cider-eval-print-last-sexp))
 
-                 :config
-                 (use-package slamhound)
-                 (setq org-babel-clojure-backend 'cider))
+       :config
+       (use-package slamhound)
+       (setq org-babel-clojure-backend 'cider))
 
-               (defun ha/cider-append-comment ()
-                 (when (null (nth 8 (syntax-ppss)))
-                   (insert " ; ")))
+     (defun ha/cider-append-comment ()
+       (when (null (nth 8 (syntax-ppss)))
+         (insert " ; ")))
 
-               (advice-add 'cider-eval-print-last-sexp :before #'ha/cider-append-comment)
+     (advice-add 'cider-eval-print-last-sexp :before #'ha/cider-append-comment)
 
-               (use-package flycheck-clojure
-                 :ensure t
-                 :init
-                 (add-hook 'after-init-hook 'global-flycheck-mode)
-                 :config
-                 (use-package flycheck
-                   :config
-                   (flycheck-clojure-setup)))
+     (use-package flycheck-clojure
+       :ensure t
+       :init
+       (add-hook 'after-init-hook 'global-flycheck-mode)
+       :config
+       (use-package flycheck
+         :config
+         (flycheck-clojure-setup)))
 
-               (use-package flycheck-pos-tip
-                 :ensure t
-                 :config
-                 (use-package flycheck
-                   :config
-                   (setq flycheck-display-errors-function 'flycheck-pos-tip-error-messages)))
+     (use-package flycheck-pos-tip
+       :ensure t
+       :config
+       (use-package flycheck
+         :config
+         (setq flycheck-display-errors-function 'flycheck-pos-tip-error-messages)))
 
-               (use-package clj-refactor
-                 :ensure t
-                 :init
-                 (add-hook 'clojure-mode-hook 'clj-refactor-mode)
-                 :config
-                 ;; Configure the Clojure Refactoring prefix:
-                 (cljr-add-keybindings-with-prefix "C-c .")
-                 :diminish clj-refactor-mode)
-
-               (use-package 4clojure
-                 :init
-                 (bind-key "<f9> a" '4clojure-check-answers clojure-mode-map)
-                 (bind-key "<f9> n" '4clojure-next-question clojure-mode-map)
-                 (bind-key "<f9> p" '4clojure-previous-question clojure-mode-map)
-
-                 :config
-                 (defadvice 4clojure-open-question (around 4clojure-open-question-around)
-                    "Start a cider/nREPL connection if one hasn't already been started when
-                    opening 4clojure questions."
-                    ad-do-it
-                    (unless cider-current-clojure-buffer
-                      (cider-jack-in))))
-
-               (defun endless/4clojure-check-and-proceed ()
-                 "Check the answer and show the next question if it worked."
-                 (interactive)
-                 (unless
-                     (save-excursion
-                       ;; Find last sexp (the answer).
-                       (goto-char (point-max))
-                       (forward-sexp -1)
-                       ;; Check the answer.
-                       (cl-letf ((answer
-                                  (buffer-substring (point) (point-max)))
-                                 ;; Preserve buffer contents, in case you failed.
-                                 ((buffer-string)))
-                         (goto-char (point-min))
-                         (while (search-forward "__" nil t)
-                           (replace-match answer))
-                         (string-match "failed." (4clojure-check-answers))))
-                   (4clojure-next-question)))
-
-               (defadvice 4clojure/start-new-problem
-                   (after endless/4clojure/start-new-problem-advice () activate)
-                 ;; Prettify the 4clojure buffer.
-                 (goto-char (point-min))
-                 (forward-line 2)
-                 (forward-char 3)
-                 (fill-paragraph)
-                 ;; Position point for the answer
-                 (goto-char (point-max))
-                 (insert "\n\n\n")
-                 (forward-char -1)
-                 ;; Define our key.
-                 (local-set-key (kbd "M-j") #'endless/4clojure-check-and-proceed))
-
-               (defvar ha-4clojure-place-file (concat user-emacs-directory "4clojure-place.txt"))
-
-               (defun ha-file-to-string (file)
-                 "Read the contents of FILE and return as a string."
-                 (with-temp-buffer
-                   (insert-file-contents file)
-                   (buffer-substring-no-properties (point-min) (point-max))))
-
-               (defun ha-file-to-list (file)
-                 "Return a list of lines in FILE."
-                 (split-string (ha-file-to-string file) "\n" t))
-
-               (defun ha-4clojure-last-project (file)
-                 (interactive "f")
-                 (if (file-exists-p file)
-                     (car (ha-file-to-list file))
-                   "1"))
-
-               (defun 4clojure-start-session ()
-                 (interactive)
-                 (4clojure-open-question
-                  (ha-4clojure-last-project ha-4clojure-place-file)))
-
-               (global-set-key (kbd "<f2> s") '4clojure-start-session)
-
-               (defun ha-string-to-file (string file)
-                 (interactive "sEnter the string: \nFFile to save to: ")
-                 (with-temp-file file
-                   (insert string)))
-
-               (when (package-installed-p '4clojure)
-                 (defun ha-4clojure-store-place (num)
-                   (ha-string-to-file (int-to-string num) ha-4clojure-place-file))
-
-                 (defadvice 4clojure-next-question (after ha-4clojure-next-question)
-                   "Save the place for each question you progress to."
-                   (ha-4clojure-store-place (4clojure/problem-number-of-current-buffer)))
-
-                 (defadvice 4clojure-open-question (after ha-4clojure-next-question)
-                   "Save the place for each question you progress to."
-                   (ha-4clojure-store-place (4clojure/problem-number-of-current-buffer)))
-
-                 (ad-activate '4clojure-next-question)
-                 (ad-activate '4clojure-open-question))
+     (use-package clj-refactor
+       :ensure t
+       :init
+       (add-hook 'clojure-mode-hook 'clj-refactor-mode)
+       :config
+       ;; Configure the Clojure Refactoring prefix:
+       (cljr-add-keybindings-with-prefix "C-c .")
+       :diminish clj-refactor-mode)
    #+end_src
 
 ** Rust
@@ -2361,100 +2269,6 @@
    #+BEGIN_SRC emacs-lisp
      (use-package interleave
        :ensure t)
-   #+END_SRC
-
-** =ledger=
-   #+BEGIN_SRC emacs-lisp
-     (use-package ledger-mode
-       :mode ("\\.dat\\'"
-              "\\.ledger\\'")
-       :custom
-       (ledger-clear-whole-transactions t)
-       (setq ledger-post-amount-alignment-column 72)
-       (setq ledger-reconcile-default-commodity "PLN")
-       :config
-       (add-hook 'before-save-hook 'ledger-mode-clean-buffer))
-
-     (defun nist/visit-ledger-journal ()
-       (interactive)
-       (find-file "~/Dropbox/ledger/journal.ledger"))
-
-     (global-set-key (kbd "C-c t l") 'nist/visit-ledger-journal)
-
-     (flycheck-def-option-var flycheck-ledger-zero-accounts nil ledger-zero
-       "Whether to check account names, tags, and payees from cleared transactions."
-       :type '(repeat string)
-       :safe #'flycheck-string-list-p)
-
-     (flycheck-define-checker ledger
-       "A checker for ledger files, showing unmatched balances and failed checks."
-       :command ("ledger"
-                 "balance"
-                 ;; to find non-zero zero accounts:
-                 "--flat" "--no-total"
-                 "--balance-format" "%(scrub(display_total))\t\t%(account())\n"
-                 (eval flycheck-ledger-zero-accounts))
-       :error-patterns
-       ((error line-start "While parsing file \"" (file-name) "\", line " line ":" (zero-or-more whitespace) "\n"
-               (zero-or-more line-start (or "While " "> ") (one-or-more not-newline) "\n" )
-               (message (minimal-match (zero-or-more line-start (zero-or-more not-newline) "\n"))
-                        "Error: " (one-or-more not-newline) "\n")))
-       :error-parser
-       (lambda (output checker buffer)
-         (let ((pattern-errors (flycheck-parse-with-patterns output checker buffer)))
-           (or pattern-errors
-               (when (> (length flycheck-ledger-zero-accounts) 0)
-                 (flycheck-ledger--zero-error-parser output checker buffer)))))
-       :verify
-       (lambda (checker)
-         (let ((has-accounts (> (length flycheck-ledger-zero-accounts) 0)))
-           (list
-            (flycheck-verification-result-new
-             :label "accounts"
-             :message (if has-accounts (format "%s" flycheck-ledger-zero-accounts) "none")
-             :face 'success))))
-       :modes ledger-mode)
-
-     (defun flycheck-ledger--zero-error-parser (output checker buffer)
-       "Return errors found in OUTPUT.
-     CHECKER is a `flycheck-ledger-zero' checker.
-     BUFFER is the buffer being checked by flycheck.
-     Return a list of parsed errors and warnings (as `flycheck-error'
-     objects)."
-       (let ((errors (list))
-             (buffer (current-buffer)))
-         (save-match-data
-           (with-temp-buffer
-             (insert output)
-             (goto-char (point-min))
-             (while (re-search-forward "^\\(.*\\)\\>\t\t\\<\\(.*\\)$" nil t)
-               (let* ((amount (string-trim (match-string-no-properties 1)))
-                      (account (string-trim (match-string-no-properties 2)))
-                      (message (format "Account %s should have zero value but has %s"
-                                       account amount))
-                      (position (flycheck-ledger--zero-last-position-of-account account buffer))
-                      (line (or (car position) 1))
-                      (column (or (cdr position) 0)))
-                 (push
-                  (flycheck-error-new-at
-                   line column 'error message
-                   :checker checker
-                   :filename (buffer-file-name buffer) :buffer buffer)
-                  errors)))))
-         errors))
-
-     (defun flycheck-ledger--zero-last-position-of-account (account buffer)
-       "Return (LINE . COL) of last occurence of ACCOUNT in BUFFER.
-     Return nil if ACCOUNT can't be found in BUFFER."
-       (with-current-buffer buffer
-         (save-restriction
-           (save-excursion
-             (goto-char (point-max))
-             (when (search-backward account nil t)
-               (cons (line-number-at-pos (point))
-                     (1+ (- (point) (line-beginning-position)))))))))
-
-     (add-to-list 'flycheck-checkers 'ledger)
    #+END_SRC
 
 * Shortcuts
