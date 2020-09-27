@@ -632,20 +632,12 @@
           (setq company-dabbrev-downcase nil)))
     #+END_SRC
 
-    =company-quickhelp=
+*** =company-quickhelp=
     #+BEGIN_SRC emacs-lisp
       (use-package company-quickhelp
         :init (company-quickhelp-mode t)
         :config (setq company-quickhelp-mode t))
     #+END_SRC
-
-    # Tabnine integration
-    # #+BEGIN_SRC emacs-lisp
-    #   (use-package company-tabnine
-    #     :after company
-    #     :config
-    #     (add-to-list 'company-backends #'company-tabnine))
-    # #+END_SRC
 
 *** =lsp-mode=
     #+BEGIN_SRC emacs-lisp
@@ -689,15 +681,6 @@
    #+END_SRC
 
 ** CSS and SASS
-**** Indent 2 spaces
-	 #+BEGIN_SRC emacs-lisp
-		 (add-hook 'css-mode-hook (lambda ()
-																(setq css-indent-offset 2)))
-		 (add-hook 'scss-mode-hook (lambda ()
-																 (setq css-indent-offset 2)))
-
-	 #+END_SRC
-
 **** Use =rainbow-mode=
 		 #+BEGIN_SRC emacs-lisp
 			 (use-package rainbow-mode
@@ -735,35 +718,6 @@
 	 #+End_SRC
 
 ** JavaScript
-*** Coffee
-	 #+BEGIN_SRC emacs-lisp
-		 (use-package coffee-mode
-			 :ensure t
-			 :init
-			 (setq js-indent-level 2)
-			 (add-hook 'coffee-mode-hook
-								 (lambda ()
-									 (yas-minor-mode 1)
-									 (setq coffee-tab-width 2)
-									 (setq whitespace-action '(auto-cleanup)))))
-	 #+END_SRC
-
-	 After compiling coffee into js, I wan't to move to corresponding point in js file
-
-	 #+BEGIN_SRC emacs-lisp
-		 (setq coffee-args-compile '("-c" "--no-header" "-m"))
-		 (add-hook 'coffee-after-compile-hook 'sourcemap-goto-corresponding-point)
-	 #+END_SRC
-
-	 Remove file after this dance
-
-	 #+BEGIN_SRC emacs-lisp
-		 (defun nist/coffee-after-compile-hook (props)
-			 (sourcemap-goto-corresponding-point props)
-			 (delete-file (plist-get props :sourcemap)))
-		 (add-hook 'coffee-after-compile-hook 'nist/coffee-after-compile-hook)
-	 #+END_SRC
-
 *** VueJS
     #+BEGIN_SRC emacs-lisp
       (use-package vue-mode)
