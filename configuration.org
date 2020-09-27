@@ -109,13 +109,6 @@
      (setq large-file-warning-threshold 100000000)
    #+END_SRC
 
-** Save cursor point
-   #+BEGIN_SRC emacs-lisp
-    (require 'saveplace)
-    (setq save-place-file  "~/.emacs.d/private/saveplace.el")
-    (setq-default save-place t)
-   #+END_SRC
-
 ** Which-key
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
@@ -139,9 +132,9 @@
 *** Set default font
     #+BEGIN_SRC emacs-lisp
       (setq nist/default-font "Dejavu Sans Mono")
-      (setq nist/default-font-size 18)
+      (setq nist/default-font-size 12)
       (setq nist/current-font-size nist/default-font-size)
-      (setq default-frame-alist '((font . "Dejavu Sans Mono-18")))
+      (setq default-frame-alist '((font . "Dejavu Sans Mono-12")))
     #+END_SRC
 
 *** Handle resizing
@@ -232,17 +225,17 @@
      (defun nist/apply-solorized-dark-theme ()
        "Apply the `solorized-dark` theme"
        (interactive)
-       (load-theme 'solarized-dark t))
+       (load-theme 'doom-nord-light t))
    #+END_SRC
 
    Apply theme
 
 	 #+BEGIN_SRC emacs-lisp
-	   (if (daemonp)
-	       (add-hook 'after-make-frame-functions
-			 (lambda (frame)
-			   (with-selected-frame frame (nist/apply-solorized-dark-theme))))
-	     (nist/apply-solorized-dark-theme))
+     (if (daemonp)
+         (add-hook 'after-make-frame-functions
+       (lambda (frame)
+         (with-selected-frame frame (nist/apply-solorized-dark-theme))))
+       (nist/apply-solorized-dark-theme))
 	 #+END_SRC
 
 ** Smooth scrolling
@@ -339,6 +332,8 @@
 ** =smartparens=
    #+BEGIN_SRC emacs-lisp
      (use-package evil-smartparens
+       :ensure t
+       :after evil
        :config
        (evil-smartparens-mode)
        (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
@@ -359,8 +354,11 @@
      (use-package evil
        :ensure t
        :init
-       (setq evil-want-integration t)
-       (setq evil-want-keybinding nil)
+       (progn
+         (setq evil-want-C-u-scroll t
+               evil-want-integration nil
+               evil-want-abbrev-expand-on-insert-exit nil
+               evil-want-keybinding nil)) ; needed by evil-collection
        :config
        (evil-mode 1))
    #+END_SRC
@@ -369,13 +367,11 @@
    #+BEGIN_SRC emacs-lisp
      (use-package evil-surround
        :ensure t
+       :after evil
        :config
        (global-evil-surround-mode 1))
    #+END_SRC
-** Do not expand abbrevs when hit escape or c-]
-   #+BEGIN_SRC emacs-lisp
-     (setq evil-want-abbrev-expand-on-insert-exit nil)
-   #+END_SRC
+
 ** =evil-collection=
    Adds evil bindings for a lot of modes
    #+BEGIN_SRC emacs-lisp
@@ -540,8 +536,11 @@
          (interactive)
          (if (string-equal "CANCELED" (org-entry-get nil "TODO"))
              nil (org-todo 'done))
-         (if (string-equal "habit" (org-entry-get nil "STYLE"))
-             nil (org-archive-subtree)))
+         (org-archive-subtree)
+         (save-some-buffers "archive.org")
+         (kill-buffer "archive.org")
+         (delete-other-windows)
+         (save-buffer))
      #+END_SRC
 
 ** Open index file                                                      :org:
@@ -679,7 +678,7 @@
         :ensure t
         :defer t
         :init (global-company-mode)
-        :bind ("TAB" . company-complete-section)
+        :bind ("C-<return>" . company-complete-selection)
         :config
         (progn
           (bind-key [remap completion-at-point] #'company-complete company-mode-map)
@@ -696,13 +695,13 @@
         :config (setq company-quickhelp-mode t))
     #+END_SRC
 
-    Tabnine integration
-    #+BEGIN_SRC emacs-lisp
-      (use-package company-tabnine
-        :after company
-        :config
-        (add-to-list 'company-backends #'company-tabnine))
-    #+END_SRC
+    # Tabnine integration
+    # #+BEGIN_SRC emacs-lisp
+    #   (use-package company-tabnine
+    #     :after company
+    #     :config
+    #     (add-to-list 'company-backends #'company-tabnine))
+    # #+END_SRC
 
 *** =lsp-mode=
     #+BEGIN_SRC emacs-lisp
@@ -1250,205 +1249,202 @@
 
 ** Clojure
    #+begin_src emacs-lisp
-     (use-package clojure-mode
-       :ensure t
-       :init
-       (defconst clojure--prettify-symbols-alist
-         '(("fn"   . ?λ)
-           ("__"   . ?⁈)))
+               (use-package clojure-mode
+                 :ensure t
+                 :init
+                 (defconst clojure--prettify-symbols-alist
+                   '(("fn"   . ?λ)
+                     ("__"   . ?⁈)))
 
-       :config
-       (define-clojure-indent
-         (defroutes 'defun)
-         (GET 2)
-         (POST 2)
-         (PUT 2)
-         (DELETE 2)
-         (HEAD 2)
-         (ANY 2)
-         (context 2))
-       (add-hook 'clojure-mode-hook 'global-prettify-symbols-mode)
-       :bind (("C-c d f" . cider-code)
-              ("C-c d g" . cider-grimoire)
-              ("C-c d w" . cider-grimoire-web)
-              ("C-c d c" . clojure-cheatsheet)
-              ("C-c d d" . dash-at-point)))
+                 :config
+                 (define-clojure-indent
+                   (defroutes 'defun)
+                   (GET 2)
+                   (POST 2)
+                   (PUT 2)
+                   (DELETE 2)
+                   (HEAD 2)
+                   (ANY 2)
+                   (context 2))
+                 (add-hook 'clojure-mode-hook 'global-prettify-symbols-mode)
+                 :bind (("C-c d f" . cider-code)
+                        ("C-c d g" . cider-grimoire)
+                        ("C-c d w" . cider-grimoire-web)
+                        ("C-c d c" . clojure-cheatsheet)
+                        ("C-c d d" . dash-at-point)))
 
-     (use-package color-identifiers-mode
-       :ensure t
-       :init
-       (add-hook 'clojure-mode-hook 'color-identifiers-mode))
+               (use-package color-identifiers-mode
+                 :ensure t
+                 :init
+                 (add-hook 'clojure-mode-hook 'color-identifiers-mode))
 
-     (defun cider-send-and-evaluate-sexp ()
-       "Sends the s-expression located before the point or the active
-       region to the REPL and evaluates it. Then the Clojure buffer is
-       activated as if nothing happened."
-       (interactive)
-       (if (not (region-active-p))
-           (cider-insert-last-sexp-in-repl)
-         (cider-insert-in-repl
-          (buffer-substring (region-beginning) (region-end)) nil))
-       (cider-switch-to-repl-buffer)
-       (cider-repl-closing-return)
-       (cider-switch-to-last-clojure-buffer)
-       (message ""))
+               (defun cider-send-and-evaluate-sexp ()
+                 "Sends the s-expression located before the point or the active
+                 region to the REPL and evaluates it. Then the Clojure buffer is
+                 activated as if nothing happened."
+                 (interactive)
+                 (if (not (region-active-p))
+                     (cider-insert-last-sexp-in-repl)
+                   (cider-insert-in-repl
+                    (buffer-substring (region-beginning) (region-end)) nil))
+                 (cider-switch-to-repl-buffer)
+                 (cider-repl-closing-return)
+                 (cider-switch-to-last-clojure-buffer)
+                 (message ""))
 
-     (use-package cider
-       :ensure t
-       :commands (cider cider-connect cider-jack-in)
+               (use-package cider
+                 :ensure t
+                 :commands (cider cider-connect cider-jack-in)
 
-       :init
-       (setq cider-auto-select-error-buffer t
-             cider-repl-pop-to-buffer-on-connect nil
-             cider-repl-use-clojure-font-lock t
-             cider-repl-wrap-history t
-             cider-repl-history-size 1000
-             cider-show-error-buffer t
-             nrepl-hide-special-buffers t
-             ;; Stop error buffer from popping up while working in buffers other than the REPL:
-             nrepl-popup-stacktraces nil)
+                 :init
+                 (setq cider-auto-select-error-buffer t
+                       cider-repl-pop-to-buffer-on-connect nil
+                       cider-repl-use-clojure-font-lock t
+                       cider-repl-wrap-history t
+                       cider-repl-history-size 1000
+                       cider-show-error-buffer t
+                       nrepl-hide-special-buffers t
+                       ;; Stop error buffer from popping up while working in buffers other than the REPL:
+                       nrepl-popup-stacktraces nil)
 
-       ;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-       (add-hook 'cider-mode-hook 'company-mode)
+                 ;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+                 (add-hook 'cider-mode-hook 'company-mode)
 
-       (add-hook 'cider-repl-mode-hook 'paredit-mode)
-       (add-hook 'cider-repl-mode-hook 'superword-mode)
-       (add-hook 'cider-repl-mode-hook 'company-mode)
-       (add-hook 'cider-test-report-mode 'jcf-soft-wrap)
+                 (add-hook 'cider-repl-mode-hook 'paredit-mode)
+                 (add-hook 'cider-repl-mode-hook 'superword-mode)
+                 (add-hook 'cider-repl-mode-hook 'company-mode)
+                 (add-hook 'cider-test-report-mode 'jcf-soft-wrap)
 
-       :bind (:map cider-mode-map
-              ("C-c C-v C-c" . cider-send-and-evaluate-sexp)
-              ("C-c C-p"     . cider-eval-print-last-sexp))
+                 :bind (:map cider-mode-map
+                        ("C-c C-v C-c" . cider-send-and-evaluate-sexp)
+                        ("C-c C-p"     . cider-eval-print-last-sexp))
 
-       :config
-       (use-package slamhound))
+                 :config
+                 (use-package slamhound)
+                 (setq org-babel-clojure-backend 'cider))
 
-     (defun ha/cider-append-comment ()
-       (when (null (nth 8 (syntax-ppss)))
-         (insert " ; ")))
+               (defun ha/cider-append-comment ()
+                 (when (null (nth 8 (syntax-ppss)))
+                   (insert " ; ")))
 
-     (advice-add 'cider-eval-print-last-sexp :before #'ha/cider-append-comment)
+               (advice-add 'cider-eval-print-last-sexp :before #'ha/cider-append-comment)
 
-     (use-package ob-clojure
-       :init
-       (setq org-babel-clojure-backend 'cider))
+               (use-package flycheck-clojure
+                 :ensure t
+                 :init
+                 (add-hook 'after-init-hook 'global-flycheck-mode)
+                 :config
+                 (use-package flycheck
+                   :config
+                   (flycheck-clojure-setup)))
 
-     (use-package flycheck-clojure
-       :ensure t
-       :init
-       (add-hook 'after-init-hook 'global-flycheck-mode)
-       :config
-       (use-package flycheck
-         :config
-         (flycheck-clojure-setup)))
+               (use-package flycheck-pos-tip
+                 :ensure t
+                 :config
+                 (use-package flycheck
+                   :config
+                   (setq flycheck-display-errors-function 'flycheck-pos-tip-error-messages)))
 
-     (use-package flycheck-pos-tip
-       :ensure t
-       :config
-       (use-package flycheck
-         :config
-         (setq flycheck-display-errors-function 'flycheck-pos-tip-error-messages)))
+               (use-package clj-refactor
+                 :ensure t
+                 :init
+                 (add-hook 'clojure-mode-hook 'clj-refactor-mode)
+                 :config
+                 ;; Configure the Clojure Refactoring prefix:
+                 (cljr-add-keybindings-with-prefix "C-c .")
+                 :diminish clj-refactor-mode)
 
-     (use-package clj-refactor
-       :ensure t
-       :init
-       (add-hook 'clojure-mode-hook 'clj-refactor-mode)
-       :config
-       ;; Configure the Clojure Refactoring prefix:
-       (cljr-add-keybindings-with-prefix "C-c .")
-       :diminish clj-refactor-mode)
+               (use-package 4clojure
+                 :init
+                 (bind-key "<f9> a" '4clojure-check-answers clojure-mode-map)
+                 (bind-key "<f9> n" '4clojure-next-question clojure-mode-map)
+                 (bind-key "<f9> p" '4clojure-previous-question clojure-mode-map)
 
-     (use-package 4clojure
-       :init
-       (bind-key "<f9> a" '4clojure-check-answers clojure-mode-map)
-       (bind-key "<f9> n" '4clojure-next-question clojure-mode-map)
-       (bind-key "<f9> p" '4clojure-previous-question clojure-mode-map)
+                 :config
+                 (defadvice 4clojure-open-question (around 4clojure-open-question-around)
+                    "Start a cider/nREPL connection if one hasn't already been started when
+                    opening 4clojure questions."
+                    ad-do-it
+                    (unless cider-current-clojure-buffer
+                      (cider-jack-in))))
 
-       :config
-       (defadvice 4clojure-open-question (around 4clojure-open-question-around)
-          "Start a cider/nREPL connection if one hasn't already been started when
-          opening 4clojure questions."
-          ad-do-it
-          (unless cider-current-clojure-buffer
-            (cider-jack-in))))
+               (defun endless/4clojure-check-and-proceed ()
+                 "Check the answer and show the next question if it worked."
+                 (interactive)
+                 (unless
+                     (save-excursion
+                       ;; Find last sexp (the answer).
+                       (goto-char (point-max))
+                       (forward-sexp -1)
+                       ;; Check the answer.
+                       (cl-letf ((answer
+                                  (buffer-substring (point) (point-max)))
+                                 ;; Preserve buffer contents, in case you failed.
+                                 ((buffer-string)))
+                         (goto-char (point-min))
+                         (while (search-forward "__" nil t)
+                           (replace-match answer))
+                         (string-match "failed." (4clojure-check-answers))))
+                   (4clojure-next-question)))
 
-     (defun endless/4clojure-check-and-proceed ()
-       "Check the answer and show the next question if it worked."
-       (interactive)
-       (unless
-           (save-excursion
-             ;; Find last sexp (the answer).
-             (goto-char (point-max))
-             (forward-sexp -1)
-             ;; Check the answer.
-             (cl-letf ((answer
-                        (buffer-substring (point) (point-max)))
-                       ;; Preserve buffer contents, in case you failed.
-                       ((buffer-string)))
-               (goto-char (point-min))
-               (while (search-forward "__" nil t)
-                 (replace-match answer))
-               (string-match "failed." (4clojure-check-answers))))
-         (4clojure-next-question)))
+               (defadvice 4clojure/start-new-problem
+                   (after endless/4clojure/start-new-problem-advice () activate)
+                 ;; Prettify the 4clojure buffer.
+                 (goto-char (point-min))
+                 (forward-line 2)
+                 (forward-char 3)
+                 (fill-paragraph)
+                 ;; Position point for the answer
+                 (goto-char (point-max))
+                 (insert "\n\n\n")
+                 (forward-char -1)
+                 ;; Define our key.
+                 (local-set-key (kbd "M-j") #'endless/4clojure-check-and-proceed))
 
-     (defadvice 4clojure/start-new-problem
-         (after endless/4clojure/start-new-problem-advice () activate)
-       ;; Prettify the 4clojure buffer.
-       (goto-char (point-min))
-       (forward-line 2)
-       (forward-char 3)
-       (fill-paragraph)
-       ;; Position point for the answer
-       (goto-char (point-max))
-       (insert "\n\n\n")
-       (forward-char -1)
-       ;; Define our key.
-       (local-set-key (kbd "M-j") #'endless/4clojure-check-and-proceed))
+               (defvar ha-4clojure-place-file (concat user-emacs-directory "4clojure-place.txt"))
 
-     (defvar ha-4clojure-place-file (concat user-emacs-directory "4clojure-place.txt"))
+               (defun ha-file-to-string (file)
+                 "Read the contents of FILE and return as a string."
+                 (with-temp-buffer
+                   (insert-file-contents file)
+                   (buffer-substring-no-properties (point-min) (point-max))))
 
-     (defun ha-file-to-string (file)
-       "Read the contents of FILE and return as a string."
-       (with-temp-buffer
-         (insert-file-contents file)
-         (buffer-substring-no-properties (point-min) (point-max))))
+               (defun ha-file-to-list (file)
+                 "Return a list of lines in FILE."
+                 (split-string (ha-file-to-string file) "\n" t))
 
-     (defun ha-file-to-list (file)
-       "Return a list of lines in FILE."
-       (split-string (ha-file-to-string file) "\n" t))
+               (defun ha-4clojure-last-project (file)
+                 (interactive "f")
+                 (if (file-exists-p file)
+                     (car (ha-file-to-list file))
+                   "1"))
 
-     (defun ha-4clojure-last-project (file)
-       (interactive "f")
-       (if (file-exists-p file)
-           (car (ha-file-to-list file))
-         "1"))
+               (defun 4clojure-start-session ()
+                 (interactive)
+                 (4clojure-open-question
+                  (ha-4clojure-last-project ha-4clojure-place-file)))
 
-     (defun 4clojure-start-session ()
-       (interactive)
-       (4clojure-open-question
-        (ha-4clojure-last-project ha-4clojure-place-file)))
+               (global-set-key (kbd "<f2> s") '4clojure-start-session)
 
-     (global-set-key (kbd "<f2> s") '4clojure-start-session)
+               (defun ha-string-to-file (string file)
+                 (interactive "sEnter the string: \nFFile to save to: ")
+                 (with-temp-file file
+                   (insert string)))
 
-     (defun ha-string-to-file (string file)
-       (interactive "sEnter the string: \nFFile to save to: ")
-       (with-temp-file file
-         (insert string)))
+               (when (package-installed-p '4clojure)
+                 (defun ha-4clojure-store-place (num)
+                   (ha-string-to-file (int-to-string num) ha-4clojure-place-file))
 
-     (when (package-installed-p '4clojure)
-       (defun ha-4clojure-store-place (num)
-         (ha-string-to-file (int-to-string num) ha-4clojure-place-file))
+                 (defadvice 4clojure-next-question (after ha-4clojure-next-question)
+                   "Save the place for each question you progress to."
+                   (ha-4clojure-store-place (4clojure/problem-number-of-current-buffer)))
 
-       (defadvice 4clojure-next-question (after ha-4clojure-next-question)
-         "Save the place for each question you progress to."
-         (ha-4clojure-store-place (4clojure/problem-number-of-current-buffer)))
+                 (defadvice 4clojure-open-question (after ha-4clojure-next-question)
+                   "Save the place for each question you progress to."
+                   (ha-4clojure-store-place (4clojure/problem-number-of-current-buffer)))
 
-       (defadvice 4clojure-open-question (after ha-4clojure-next-question)
-         "Save the place for each question you progress to."
-         (ha-4clojure-store-place (4clojure/problem-number-of-current-buffer)))
-
-       (ad-activate '4clojure-next-question)
-       (ad-activate '4clojure-open-question))
+                 (ad-activate '4clojure-next-question)
+                 (ad-activate '4clojure-open-question))
    #+end_src
 
 ** Rust
@@ -1526,56 +1522,80 @@
 ** Golang
 *** Set environment
     #+BEGIN_SRC emacs-lisp
-      (setenv "GOPATH" "/home/vmikh/code/gocode")
+      (setenv "GOPATH" "/home/val/code/gocode")
+      (setenv "GO111MODULE" "on")
+      (setenv "PATH" "$HOME/bin:/usr/local/bin:/usr/sbin:/usr/bin:/usr/bin/heroku:/sbin:$HOME/bin:$HOME/.bin:$HOME/.cask/bin:$PATH:$GOPATH/bin")
     #+END_SRC
+
 *** A bunch of useful packages
     #+BEGIN_SRC emacs-lisp
       (use-package go-mode :ensure t)
-      (use-package go-guru :demand t)
-      (use-package exec-path-from-shell :ensure t)
-      (use-package auto-complete :ensure t)
-      (use-package go-autocomplete :ensure t)
-      (use-package flymake-go :ensure t)
+      (use-package gotest :ensure t)
+      (use-package lsp-mode
+        :ensure t
+        :commands (lsp lsp-deferred)
+        :hook (go-mode . lsp-deferred))
+
+      (use-package lsp-ui
+        :ensure t
+        :commands lsp-ui-mode
+        :init)
+
+      (use-package yasnippet
+        :ensure t
+        :commands yas-minor-mode
+        :hook (go-mode . yas-minor-mode))
+
+      (use-package protobuf-mode
+        :hook (protobuf-mode . (lambda ()
+                                 (setq imenu-generic-expression
+                                       '((nil "^[[:space:]]*\\(message\\|service\\|enum\\)[[:space:]]+\\([[:alnum:]]+\\)" 2))))))
     #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
      (defun  my-go-mode-hook ()
-       (add-hook 'before-save-hook 'gofmt-before-save) ; gofmt before every save
-       (setq gofmt-command "goimports")                ; gofmt uses invokes goimports
-       (yas-minor-mode 1)
-       (if (not (string-match "go" compile-command))   ; set compile command default
-           (set (make-local-variable 'compile-command)
-                "go build -v && go test -v && go vet"))
+       (add-hook 'before-save-hook 'lsp-format-buffer)
+       (add-hook 'before-save-hook 'lsp-organize-imports)
 
-       ;; guru settings
-       (go-guru-hl-identifier-mode)                    ; highlight identifiers
+       (setq compile-command "go run .")
+       (setq compilation-read-command t)
+       (electric-pair-mode 1)
+
+       (setq compilation-window-height 14)
+       (defun val/go-compile-hook ()
+         (when (not (get-buffer-window "*compilation*"))
+           (save-selected-window
+             (save-excursion
+               (let* ((w (split-window-vertically))
+                      (h (window-height w)))
+                 (select-window w)
+                 (switch-to-buffer "*compilation*")
+                 (shrink-window (- h compilation-window-height)))))))
+       (add-hook 'compilation-mode-hook 'val/go-compile-hook)
 
        ;; Key bindings specific to go-mode
+       (local-set-key (kbd "C-c C-t") 'go-test-current-file)
        (local-set-key (kbd "M-.") 'godef-jump)         ; Go to definition
        (local-set-key (kbd "M-,") 'pop-tag-mark)       ; Return from whence you came
+       (local-set-key (kbd "C-c C-r") 'val/go-compile-hook)
        (local-set-key (kbd "C-c C-p") 'compile)        ; Invoke compiler
        (local-set-key (kbd "C-c C-P") 'recompile)      ; Redo most recent compile cmd
+       (local-set-key (kbd "C-c C-\\") 'lsp-ui-sideline-apply-code-actions)
        (local-set-key (kbd "M-]") 'next-error)         ; Go to next error (or msg)
        (local-set-key (kbd "M-[") 'previous-error)     ; Go to previous error or msg
 
-       ;; Misc go stuff
-       (auto-complete-mode 1))                         ; Enable auto-complete mode
+       (setq lsp-gopls-server-path "/home/val/go/bin/gopls")
+
+       (setq lsp-ui-doc-enable nil
+             lsp-ui-peek-enable t
+             lsp-ui-sideline-enable t
+             lsp-ui-imenu-enable t
+             lsp-ui-flycheck-enable t))
 
      ;; Connect go-mode-hook with the function we just defined
      (add-hook 'go-mode-hook 'my-go-mode-hook)
-
-     ;; Ensure the go specific autocomplete is active in go-mode.
-     (with-eval-after-load 'go-mode
-       (require 'go-autocomplete))
-
-     ;; If the go-guru.el file is in the load path, this will load it.
-     (require 'go-guru)
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list 'exec-path "~/code/gocode/bin")
-     (add-hook 'before-save-hook 'gofmt-before-save)
-   #+END_SRC
 ** Graphviz
    Graph visualization
 
@@ -1625,6 +1645,17 @@
          :next-checkers ((warnings-only . ruby-rubocop))))
    #+END_SRC
 
+** Kubernetes
+   #+begin_src emacs-lisp
+     (use-package k8s-mode
+       :ensure t
+       :hook (k8s-mode . yas-minor-mode)
+       :bind
+       ("C-\\" . 'base64-decode-region)
+       ("C-|" . 'base64-encode-region)
+       )
+   #+end_src
+
 * Editing preferences
 ** Delete trailing white-space's
    #+BEGIN_SRC emacs-lisp
@@ -1660,6 +1691,13 @@
        :config
        (setq yas-snippet-dirs '("~/.emacs.d/snippets/text-mode")))
    #+END_SRC
+
+   Use doom-snippets
+   #+begin_src emacs-lisp
+     (use-package doom-snippets
+       :load-path "/home/val/.emacs.d/snippets/doom-snippets"
+       :after yasnippet)
+   #+end_src
 
 ** Configure =abbrev-mode=
    My name and email is too hard to spell, so I like to keep some personal
@@ -1807,8 +1845,6 @@
 
 ** Use =helm=
    #+BEGIN_SRC emacs-lisp
-     (use-package helm-config)
-
      (use-package helm
        :after helm-config
        :bind
@@ -1947,10 +1983,12 @@
 ** Agenda
 *** Feed agenda with following files
    #+BEGIN_SRC emacs-lisp
-     (setq org-agenda-files (list org-index-file
-                                  "~/Dropbox/org/shop.org"
-                                  "~/Dropbox/org/payments.org"
-                                  "~/Dropbox/org/habits.org"))
+          (setq org-agenda-files (list org-index-file
+                                       "~/Dropbox/org/shop.org"
+                                       "~/Dropbox/org/fitness.org"
+                                       "~/Dropbox/org/projects.org"
+                                       "~/Dropbox/org/work.org"
+                                       "~/Dropbox/org/ideas.org"))
    #+END_SRC
 
 *** Start agenda in =normal= mode
@@ -2243,11 +2281,15 @@
                 (file (lambda () (nist/org-directory-file "snippets.org")))
                 "* %?\n%(nist/org-capture-code-snippet \"%F\")")
 
-               ("r" "Recipes"
+               ("s" "Shop"
                 entry
-                (file (lambda () (nist/org-directory-file "cookbook.org")))
-                "%(org-chef-get-recipe-from-url)"
-                :empty-lines 1)
+                (file+headline (lambda () (nist/org-directory-file "shop.org")) "Index")
+                "* TODO %?\nSCHEDULED: %^T\n")
+
+               ("w" "Work"
+                entry
+                (file+headline (lambda () (nist/org-directory-file "work.org")) "Tasks")
+                "* TODO %?\nSCHEDULED: %^T")
 
                ("t" "Todo"
                 entry
