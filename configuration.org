@@ -1,12 +1,6 @@
 #+TITLE: Emacs configuration
 
 * Defaults
-** Whitelist local variables
-   #+begin_src emacs-lisp
-     (add-to-list 'safe-local-variable-values '(rubocop-autocorrect-command . "docker-compose run --rm runner bundle exec rubocop -a"))
-     (add-to-list 'safe-local-variable-values '(rubocop-check-command . "docker-compose run --rm runner bundle exec rubocop --format emacs"))
-   #+end_src
-
 ** Add resources to load path
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'load-path "~/.emacs.d/resources/")
@@ -68,11 +62,6 @@
                                    "/itsalltext/")
              recentf-auto-cleanup 'never)
        (recentf-mode 1))
-   #+END_SRC
-
-** Toggle frame maximized (avoid empty space on right side after start - gtk bug)
-   #+BEGIN_SRC emacs-lisp
-     (toggle-frame-maximized)
    #+END_SRC
 
 ** Force emacs to use its own internal password prompt
