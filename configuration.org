@@ -549,20 +549,6 @@
        (nist/pop-to-org-agenda-view "d" (not nosplit)))
    #+END_SRC
 
-** Open org file                                                        :org:
-   #+begin_src emacs-lisp
-   #+end_src
-
-** Skip habits in agenda view
-   #+BEGIN_SRC emacs-lisp
-     (defun nist/org-skip-subtree-if-habit ()
-       "Skip an agenda if it has a STYLE property equal to \"habit\"."
-       (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-         (if (string= (org-entry-get nil "STYLE") "habit")
-             subtree-end
-           nil)))
-   #+END_SRC
-
 ** Skip org subtree in agenda view with given pririty
    #+BEGIN_SRC emacs-lisp
      (defun nist/org-skip-subtree-if-priority (priority)
@@ -574,17 +560,6 @@
          (if (= pri-value pri-current)
              subtree-end
            nil)))
-   #+END_SRC
-
-** Insert =# frozen_string_literal: true= on save                      :ruby:
-   #+BEGIN_SRC emacs-lisp
-     (defun nist/ruby-mode-insert-frozen-string-literal-true ()
-       (when (eq major-mode 'ruby-mode)
-         (save-excursion
-           (widen)
-           (goto-char (point-min))
-           (unless (looking-at "^# frozen_string_literal: true")
-             (insert "# frozen_string_literal: true\n\n")))))
    #+END_SRC
 
 ** Hide minibuffer in Helm session if we use the header line as input field.
@@ -618,11 +593,6 @@
 
 * Programming
 ** Common
-*** Default tab width
-   #+BEGIN_SRC emacs-lisp
-     (setq-default tab-width 2)
-   #+END_SRC
-
 *** CamelCase everywhere
 	 #+BEGIN_SRC emacs-lisp
      (use-package subword
