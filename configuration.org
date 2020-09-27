@@ -1412,6 +1412,7 @@
       (ido-mode 1)
       (setq ido-create-new-buffer 'always)
     #+END_SRC
+
 *** Better and faster matching
     #+BEGIN_SRC emacs-lisp
       (use-package flx-ido
@@ -1420,6 +1421,7 @@
         :init (flx-ido-mode 1)
         :config (setq ido-enable-flex-matching t))
     #+END_SRC
+
 *** Vertical buffer
     #+BEGIN_SRC emacs-lisp
       (use-package ido-vertical-mode
@@ -1470,33 +1472,6 @@
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "C-x 2") 'nist/split-window-below-and-switch)
      (global-set-key (kbd "C-x 3") 'nist/split-window-right-and-switch)
-   #+END_SRC
-
-** Search whatever-wherever using =engine-mode=
-   #+BEGIN_SRC emacs-lisp
-     (use-package engine-mode
-       :init (engine-mode t)
-       :config
-       (defengine duckduckgo
-         "https://duckduckgo.com/?q=%s"
-         :keybinding "d")
-       (defengine github
-         "https://github.com/search?ref=simplesearch&q=%s"
-         :keybinding "g")
-       (defengine stack-overflow
-         "https://stackoverflow.com/search?q=%s"
-         :keybinding "s")
-       (defengine wikipedia
-         "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
-       (defengine arch-wiki
-         "https://wiki.archlinux.org/index.php?title=Special:Search&search=%s&go=Go"
-         :keybinding "a")
-       (defengine wolfram-alpha
-         "http://www.wolframalpha.com/input/?i=%s"
-         :keybinding "w")
-       (defengine youtube
-         "https://www.youtube.com/results?search_query=%s"
-         :keybinding "y"))
    #+END_SRC
 
 ** Edit comments in org-mode
@@ -1585,11 +1560,6 @@
        :modes (text-mode latex-mode org-mode markdown-mode))
      (add-to-list 'flycheck-checkers 'textlint)
    #+END_SRC
-*** Use =powerthesaurus= to find synonyms
-    #+BEGIN_SRC emacs-lisp
-      (use-package powerthesaurus
-        :bind ("C-x w" . powerthesaurus-lookup-word-dwim))
-    #+END_SRC
 
 * Custom keybindings
   #+BEGIN_SRC emacs-lisp
@@ -1641,6 +1611,7 @@
             (format "ssh -i ~/.ssh/deploy valiantsin_mikhaliuk@%s\r" x)))))
      (global-set-key (kbd "M-s s") 'ssh-to-host)
    #+END_SRC
+
 * Org-mode
 ** General settings
    #+BEGIN_SRC emacs-lisp
@@ -1695,22 +1666,6 @@
                ((org-agenda-compact-blocks t)))))
     #+END_SRC
 
-*** =org-habit=
-    #+BEGIN_SRC emacs-lisp
-      (use-package org-habit
-        :ensure nil
-        :after org
-        :config
-        (setq org-habit-graph-column 50))
-    #+END_SRC
-
-*** Send reminders about current task
-    #+BEGIN_SRC emacs-lisp
-      (use-package secretaria
-        :config
-        (add-hook 'after-init-hook #'secretaria-unknown-time-always-remind-me))
-    #+END_SRC
-
 ** Keybindings
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "C-c l") 'org-store-link)
@@ -1745,6 +1700,7 @@
     #+BEGIN_SRC emacs-lisp
       (setq org-src-window-setup 'current-window)
     #+END_SRC
+
 ** Exporting
 *** General
     #+BEGIN_SRC emacs-lisp
@@ -1851,8 +1807,6 @@
     #+END_SRC
 
 *** TeX configuration
-    I maintain a two files in LaTeX, but I often export through it org-mode documents.
-
     Parse file after load
     #+BEGIN_SRC emacs-lisp
       (setq TeX-parse-self t)
@@ -1896,27 +1850,9 @@
    #+BEGIN_SRC emacs-lisp
      (add-hook 'org-mode-hook
                '(lambda () (setq org-file-apps
-                                 (append '(("\\.x?html?\\'" . "/usr/bin/chromium %s"))))))
+                                 (append '(("\\.x?html?\\'" . "/usr/bin/firefox %s"))))))
    #+END_SRC
 
-** Quickly explore my =notes= directory with =deft=
-   #+BEGIN_SRC emacs-lisp
-     (use-package deft
-       :bind ("C-c n" . deft)
-       :commands (deft)
-       :config
-
-       (setq deft-directory "~/Dropbox/org/notes"
-             deft-extensions '("org")
-             deft-default-extension "org"
-             deft-text-mode 'org-mode
-             deft-auto-save-interval 0
-             deft-recursive t
-             deft-use-filter-string-for-filename t
-             deft-use-filename-as-title t)
-       (evil-set-initial-state 'deft-mode 'emacs)
-       (advice-add 'deft-new-file-named :filter-args #'nist/deft-strip-spaces))
-   #+END_SRC
 ** Task and capture management
 **** Settings
      Start in insert-state
@@ -1978,22 +1914,17 @@
        (require 'evil-org-agenda)
        (evil-org-agenda-set-keys))
    #+END_SRC
-** Timetracking
-*** Yeasily select latest entries
-   #+BEGIN_SRC emacs-lisp
-     (use-package org-mru-clock
-       :bind* (("C-c C-x i" . org-mru-clock-in)
-               ("C-c C-x C-j" . org-mru-clock-select-recent-task)))
-   #+END_SRC
 
 * Extensions
 ** =restclient=
-   Useful mode to test API endpoints. Drop-in replacement to the postman
+   Useful mode to test API endpoints. Drop-in replacement to the postman.
+   Exports into curl!
 
    #+BEGIN_SRC emacs-lisp
      (use-package restclient
        :ensure t)
    #+END_SRC
+
 ** =pdf-tools=
    #+BEGIN_SRC emacs-lisp
      (use-package pdf-tools
@@ -2005,11 +1936,13 @@
        (evil-set-initial-state 'pdf-view-mode 'normal)
        (setq pdf-annot-activate-created-annotations t))
    #+END_SRC
+
 ** =org-pdfview=
    #+BEGIN_SRC emacs-lisp
      (use-package org-pdfview
        :ensure t)
    #+END_SRC
+
 ** =interleave=
    #+BEGIN_SRC emacs-lisp
      (use-package interleave
