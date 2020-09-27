@@ -76,9 +76,9 @@
   #+BEGIN_SRC emacs-lisp
     (setq user-full-name "Valiantsin Mikhaliuk"
           user-mail-address "valiantsin.mikhaliuk@gmail.com"
-          calendar-latitude 54.44
-          calendar-longitude 18.56
-          calendar-location-name "Sopot, PL"
+          calendar-latitude 54.4
+          calendar-longitude 18.65
+          calendar-location-name "Gdansk, PL"
           calendar-week-start-day 1)
   #+END_SRC
 
