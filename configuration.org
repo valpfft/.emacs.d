@@ -77,7 +77,10 @@
 
 ** Force emacs to use its own internal password prompt
    #+BEGIN_SRC emacs-lisp
-     (setenv "GPG_AGENT_INFO" nil)
+     (use-package pinentry
+       :config
+       (setq epa-pinentry-mode 'loopback)
+       (pinentry-start))
    #+END_SRC
 
 * Personal information
