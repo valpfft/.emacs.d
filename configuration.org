@@ -120,9 +120,9 @@
 *** Set default font
     #+BEGIN_SRC emacs-lisp
       (setq nist/default-font "Fira Code Retina")
-      (setq nist/default-font-size 12)
+      (setq nist/default-font-size 19)
       (setq nist/current-font-size nist/default-font-size)
-      (setq default-frame-alist '((font . "Fira Code Retina-13")))
+      (setq default-frame-alist '((font . "Fira Code Retina-20")))
     #+END_SRC
 
 *** Enable ligatures!
@@ -193,14 +193,13 @@
        ;; Global settings (defaults)
        (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
              doom-themes-enable-italic t) ; if nil, italics is universally disabled
-       ;; (load-theme 'doom-one-light t)
 
        ;; Enable flashing mode-line on errors
        (doom-themes-visual-bell-config)
        (doom-themes-org-config))
 
      (use-package theme-changer
-       :config (change-theme 'doom-one-light 'doom-one))
+       :config (change-theme 'doom-solarized-light 'doom-solarized-dark))
    #+END_SRC
 
 ** Smooth scrolling
@@ -510,10 +509,10 @@
 
 ** Open index file                                                      :org:
    #+BEGIN_SRC emacs-lisp
-     (defun nist/open-index-file ()
+     (defun nist/open-inbox-file ()
        "Open the master org TODO list."
        (interactive)
-       (find-file org-index-file)
+       (find-file org-inbox-file)
        (flycheck-mode -1)
        (end-of-buffer))
    #+END_SRC
@@ -910,6 +909,7 @@
     #+BEGIN_SRC emacs-lisp
       (add-hook 'ruby-mode-hook
                 (lambda ()
+                  (lsp-mode -1)
                   (chruby-use-corresponding)
                   (setq ruby-insert-encoding-magic-comment nil)
                   (yas-minor-mode)
@@ -1231,6 +1231,15 @@
        :hook ((rust-mode . cargo-minor-mode)))
    #+END_SRC
 
+** SQL
+   #+BEGIN_SRC emacs-lisp
+     (use-package sqlformat
+       :ensure t
+       :config
+       (setq sqlformat-command 'pgformatter)
+       (add-hook 'sql-mode-hook 'sqlformat-on-save-mode))
+   #+END_SRC
+
 ** Golang
 *** Set environment
     #+BEGIN_SRC emacs-lisp
@@ -1345,6 +1354,19 @@
        ("C-|" . 'base64-encode-region))
    #+end_src
 
+** =gitlab-ci=
+   #+BEGIN_SRC emacs-lisp
+     (use-package gitlab-ci-mode
+       :mode "\\.gitlab-ci.yml"
+       :bind ("C-c C-c" . gitlab-ci-lint)
+       :config
+       (setq gitlab-ci-url "https://code.prosit.no"))
+     (use-package gitlab-ci-mode-flycheck
+       :after flycheck gitlab-ci-mode
+       :init
+       (gitlab-ci-mode-flycheck-enable))
+   #+END_SRC
+
 * Editing preferences
 ** Delete trailing white-space's
    #+BEGIN_SRC emacs-lisp
@@ -1424,7 +1446,7 @@
        :config
        (setq markdown-command "pandoc --standalone --mathjax --from=markdown")
        (add-hook 'gfm-mode-hook 'flyspell-mode)
-       (add-hook 'gfm-mode-hook (lambda () (local-set-key (kbd "M-n") 'org-capture-todo))))
+       (add-hook 'gfm-mode-hook (lambda () (local-set-key (kbd "M-n") 'org-gtd-capture))))
    #+END_SRC
 
 ** =AutoFillMode=
@@ -1481,8 +1503,7 @@
         ("M-p" . helm-do-grep-ag)
         :map helm-map
         ("<tab>" . helm-execute-persistent-action)
-        ("C-z" . helm-select-action)
-        )
+        ("C-z" . helm-select-action))
        :config
        (global-unset-key (kbd "C-x c"))
        (setq helm-buffers-fuzzy-matching t
@@ -1496,8 +1517,6 @@
              helm-ff-file-name-history-use-recentf t
              helm-echo-input-in-header-line t)
 
-       (setq helm-grep-ag-command
-             "rg --color=always --smart-case --no-heading --line-number %s %s %s")
        (setq helm-autoresize-max-height 0
              helm-autoresize-min-height 30
              helm-autoresize-mode 1)
@@ -1544,6 +1563,7 @@
     (global-set-key (kbd "C-x C-k") 'kill-region)
     (global-set-key (kbd "M-/") 'hippie-expand)
     (global-set-key (kbd "M-o") 'other-window)
+    (global-set-key (kbd "M-p") 'helm-grep-do-git-grep)
     (global-set-key (kbd "M-#") 'sort-lines)
     (global-set-key (kbd "C-c v c") 'nist/calc-eval)
   #+END_SRC
@@ -1597,7 +1617,7 @@
        :defer t
        :init
        (setq org-directory "~/Dropbox/org/")
-       (setq org-index-file "~/Dropbox/org/index.org")
+       (setq org-inbox-file "~/Dropbox/org/inbox.org")
        (setq org-archive-location
              (concat "~/Dropbox/archive.org" "::* From %s"))
        (setq org-clock-persist t)
@@ -1607,12 +1627,10 @@
 ** Agenda
 *** Feed agenda with following files
    #+BEGIN_SRC emacs-lisp
-          (setq org-agenda-files (list org-index-file
-                                       "~/Dropbox/org/shop.org"
-                                       "~/Dropbox/org/fitness.org"
-                                       "~/Dropbox/org/projects.org"
-                                       "~/Dropbox/org/work.org"
-                                       "~/Dropbox/org/ideas.org"))
+     (setq org-agenda-files (list org-inbox-file
+                                  "~/Dropbox/org/fitness.org"
+                                  "~/Dropbox/org/incubate.org"
+                                  "~/Dropbox/org/actionable.org"))
    #+END_SRC
 
 *** Start agenda in =normal= mode
@@ -1630,14 +1648,14 @@
 *** Custom agenda view
     #+BEGIN_SRC emacs-lisp
       (setq org-agenda-custom-commands
-            '(("d" "Daily agenda and all TODOs"
+            '(("g" "Scheduled today and all NEXT items" ((agenda "" ((org-agenda-span 1))) (todo "NEXT")))
+              ("d" "Daily agenda and all TODOs"
                ((tags "PRIORITY=\"A\""
                       ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                        (org-agenda-overriding-header "High-priority unfinished tasks:")))
                 (agenda "" ((org-agenda-ndays 1)))
                 (alltodo ""
-                         ((org-agenda-skip-function '(or (nist/org-skip-subtree-if-habit)
-                                                         (nist/org-skip-subtree-if-priority ?A)
+                         ((org-agenda-skip-function '(or (nist/org-skip-subtree-if-priority ?A)
                                                          (org-agenda-skip-if nil '(scheduled deadline))))
                           (org-agenda-overriding-header "ALL normal priority tasks:"))))
                ((org-agenda-compact-blocks t)))))
@@ -1648,9 +1666,10 @@
      (global-set-key (kbd "C-c l") 'org-store-link)
      (global-set-key (kbd "C-c a") 'org-agenda)
      (global-set-key (kbd "C-c c") 'org-capture)
-     (global-set-key (kbd "C-c i") 'nist/open-index-file)
-     (global-set-key (kbd "M-n") 'nist/org-capture-todo)
+     (global-set-key (kbd "C-c i") 'nist/open-inbox-file)
+     (global-set-key (kbd "M-n") (lambda () (interactive) (org-capture nil "i")))
      (global-set-key (kbd "C-c t a") (lambda () (interactive) (nist/pop-to-org-agenda-default t)))
+     (global-set-key (kbd "C-c t p") 'org-gtd-process-inbox)
      (define-key org-mode-map (kbd "C-c C-x C-s") 'nist/archive-entry)
    #+END_SRC
 
@@ -1742,25 +1761,27 @@
     Also add non-standard go loader
 
     #+BEGIN_SRC emacs-lisp
-      (use-package ob-go
-        :ensure t)
+      (use-package ob-go :ensure t :after org)
+      (use-package ob-restclient :ensure t :after org)
 
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((emacs-lisp . t)
-         (R . t)
-         (ruby . t)
-         (haskell . nil)
-         (latex . t)
-         (ledger . t)
-         (ocaml . t)
-         (shell . t)
-         (sql . t)
-         (sqlite . t)
-         (go . t)
-         (dot . t)
-         (python . t)
-         (gnuplot . t)))
+      ;; (org-babel-do-load-languages
+      ;;  'org-babel-load-languages
+      ;;  '((emacs-lisp . t)
+      ;;    ;; (R . t)
+      ;;    (ruby . t)
+      ;;    (haskell . nil)
+      ;;    (latex . t)
+      ;;    ;; (ledger . t)
+      ;;    ;; (ocaml . t)
+      ;;    (shell . t)
+      ;;    ;; (sql . t)
+      ;;    (restclient . t)
+      ;;    ;; (sqlite . t)
+      ;;    ;; (go . t)
+      ;;    ;; (dot . t)
+      ;;    ;; (python . t)
+      ;;    ;; (gnuplot . t)
+      ;;    ))
     #+END_SRC
 
     Stop asking before evaluating
@@ -1847,30 +1868,18 @@
 **** Capture templates
      #+BEGIN_SRC emacs-lisp
        (setq org-capture-templates
-             '(("i" "Idea"
-                entry
-                (file (lambda () (nist/org-directory-file "ideas.org")))
-                "* TODO %?\n")
-
-               ("c" "Code snippet"
+             `(("c" "Code snippet"
                 entry
                 (file (lambda () (nist/org-directory-file "snippets.org")))
                 "* %?\n%(nist/org-capture-code-snippet \"%F\")")
-
-               ("s" "Shop"
-                entry
-                (file+headline (lambda () (nist/org-directory-file "shop.org")) "Index")
-                "* TODO %?\nSCHEDULED: %^T\n")
-
-               ("w" "Work"
-                entry
-                (file+headline (lambda () (nist/org-directory-file "work.org")) "Tasks")
-                "* TODO %?\nSCHEDULED: %^T")
-
-               ("t" "Todo"
-                entry
-                (file+headline org-index-file "Tasks")
-                "* TODO %?\nSCHEDULED: %^T")))
+               ("i" "GTD item"
+                entry (file ,(nist/org-directory-file "inbox.org"))
+                "* %?\n%U\n\n  %i"
+                :kill-buffer t)
+               ("l" "GTD item with link to where you are in Emacs now"
+                entry (file ,(nist/org-directory-file "inbox.org"))
+                "* %?\n%U\n\n  %i\n  %a"
+                :kill-buffer t)))
      #+END_SRC
 
 **** Add a timestamp to archived items
@@ -1890,6 +1899,303 @@
        (require 'evil-org-agenda)
        (evil-org-agenda-set-keys))
    #+END_SRC
+
+** ~GTD~
+   #+BEGIN_SRC emacs-lisp
+     (setq org-gtd-directory "/home/val/Dropbox/org")
+
+     (defvar org-gtd-command-map (make-sparse-keymap)
+       "Keymap for function `org-gtd-user-input-mode', a minor mode.")
+     (define-key org-gtd-command-map (kbd "C-c C-c") 'org-gtd-clarify-finalize)
+
+
+     (defvar org-stuck-projects)
+
+     ;;;; Constants
+
+     (defconst org-gtd-actionable-file "actionable.org"
+       "Name of Org file listing all actionable items.")
+
+     (defconst org-gtd-inbox-file "inbox.org"
+       "Name of Org file listing all captured items.")
+
+     (defconst org-gtd-incubate-file "incubate.org"
+       "Name of Org file listing all someday/maybe items.")
+
+     (defconst org-gtd-actions   ".*Actions")
+     (defconst org-gtd-delegated ".*Delegated")
+     (defconst org-gtd-incubate  ".*Incubate.*")
+     (defconst org-gtd-scheduled ".*Scheduled")
+     (defconst org-gtd-projects  ".*Projects")
+     (defconst org-gtd-complete-projects
+       "+LEVEL=2+CATEGORY=\"Projects\""
+       "How to identify projects in the GTD system.")
+
+     (defconst org-gtd-stuck-projects
+       '("+LEVEL=2-DONE+CATEGORY=\"Projects\"" ("TODO" "NEXT" "WAIT") nil "")
+       "How to identify stuck projects in the GTD system.
+     This is a list of four items, the same type as in `org-stuck-projects'.")
+
+     (defun org-gtd-archive-complete-projects ()
+       "Archive all projects for which all actions/tasks are marked as done.
+     Done here is any done `org-todo-keyword'."
+       (interactive)
+       (org-map-entries
+        (lambda ()
+          (if (org-gtd--project-complete-p)
+              (progn
+                (setq org-map-continue-from (org-element-property
+                                             :begin
+                                             (org-element-at-point)))
+                (org-archive-subtree-default))))
+        org-gtd-complete-projects))
+
+     (defun org-gtd-clarify-finalize ()
+       "Finalize the clarify process."
+       (interactive)
+       (org-gtd-user-input-mode -1)
+       (exit-recursive-edit))
+
+     (defun org-gtd-process-inbox ()
+       "Process the GTD inbox.
+     Use this once a day and/or weekly as part of the weekly review."
+       (interactive)
+       (set-buffer "inbox.org")
+       (display-buffer-same-window "inbox.org" '())
+       (delete-other-windows)
+
+       (org-gtd--find-or-create-and-save-files)
+       (org-map-entries
+        (lambda ()
+          (setq org-map-continue-from (org-element-property
+                                       :begin
+                                       (org-element-at-point)))
+          (org-narrow-to-element)
+          (org-show-subtree)
+          (org-gtd--process-inbox-element)
+          (widen)))
+       (setq-local header-line-format nil)
+       (org-gtd--find-or-create-and-save-files))
+
+     (defun org-gtd-show-all-next ()
+       "Show all next actions from all agenda files in a single list.
+     This assumes all GTD files are also agenda files."
+       (interactive)
+       (org-todo-list "NEXT"))
+
+     (defun org-gtd-show-stuck-projects ()
+       "Show all projects that do not have a next action."
+       (interactive)
+       (let* ((user-stuck-projects org-stuck-projects)
+              (org-stuck-projects org-gtd-stuck-projects)
+              (stuck-projects-buffer (org-agenda-list-stuck-projects))
+              (org-stuck-projects user-stuck-projects))
+         stuck-projects-buffer))
+     ;;;; File work
+
+     (defun org-gtd--find-or-create-and-save-files ()
+       (mapcar
+        (lambda (buffer) (with-current-buffer buffer (save-buffer) buffer))
+        `(,(org-gtd--actionable-file) ,(org-gtd--incubate-file) ,(org-gtd--inbox-file))))
+
+     (defun org-gtd--inbox-file ()
+       "Create or return the buffer to the GTD inbox file."
+       (find-file-noselect (nist/org-directory-file org-gtd-inbox-file)))
+
+     (defun org-gtd--actionable-file ()
+       "Create or return the buffer to the GTD actionable file."
+       (find-file-noselect (nist/org-directory-file org-gtd-actionable-file)))
+
+     (defun org-gtd--incubate-file ()
+       "Create or return the buffer to the GTD incubate file."
+       (find-file-noselect (nist/org-directory-file org-gtd-incubate-file)))
+
+     ;;;; Just a minor mode because keymaps are cool
+
+     (define-minor-mode org-gtd-user-input-mode
+       "Minor mode for org-gtd."
+       nil "GTD " org-gtd-command-map
+       (setq-local header-line-format
+                   (substitute-command-keys
+                    "\\<org-gtd-command-map>Clarify buffer.  Finish \
+     `\\[org-gtd-clarify-finalize]'.")))
+
+     ;;;; actual GTD operations
+
+     (defun org-gtd--archive ()
+       "Process GTD inbox item as a reference item."
+       (org-gtd--clarify-item)
+       (org-todo "DONE")
+       (org-archive-subtree))
+
+     (defun org-gtd--calendar ()
+       "Process GTD inbox item by scheduling it.
+     Allow the user apply user-defined tags from
+     `org-tag-persistent-alist', `org-tag-alist' or file-local tags in
+     the inbox.  Refile to `org-gtd-actionable-file-basename'."
+       (org-gtd--clarify-item)
+       (goto-char (point-min))
+       (org-set-tags-command)
+       (org-schedule 0)
+       (org-refile nil nil (org-gtd--refile-target org-gtd-scheduled)))
+
+     (defun org-gtd--delegate ()
+       "Process GTD inbox item by delegating it.
+     Allow the user apply user-defined tags from
+     `org-tag-persistent-alist', `org-tag-alist' or file-local tags in
+     the inbox.  Set it as a waiting action and refile to
+     `org-gtd-actionable-file-basename'."
+       (org-gtd--clarify-item)
+       (goto-char (point-min))
+       (org-set-tags-command)
+       (org-todo "WAIT")
+       (org-set-property "DELEGATED_TO" (read-string "Who will do this? "))
+       (org-schedule 0)
+       (org-refile nil nil (org-gtd--refile-target org-gtd-delegated)))
+
+     (defun org-gtd--clarify-item ()
+       "User interface to reflect on and clarify the current inbox item."
+       (org-gtd-user-input-mode 1)
+       (recursive-edit))
+
+     (defun org-gtd--incubate ()
+       "Process GTD inbox item by incubating it.
+     Allow the user apply user-defined tags from
+     `org-tag-persistent-alist', `org-tag-alist' or file-local tags in
+     the inbox.  Refile to `org-gtd-incubate-file-basename'."
+       (org-gtd--clarify-item)
+       (goto-char (point-min))
+       (org-set-tags-command)
+       (org-schedule 0)
+       (org-gtd--refile-incubate))
+
+     ;;;; sorting things is hard I need to make multiple files
+
+     (defun org-gtd--nextify ()
+       "Add the NEXT keyword to the first action/task of the project.
+     Add the TODO keyword to all subsequent actions/tasks."
+       (cl-destructuring-bind
+           (first-entry . rest-entries)
+           (cdr (org-map-entries (lambda () (org-element-at-point)) t 'tree))
+         (org-element-map
+             (reverse rest-entries)
+             'headline
+           (lambda (myelt)
+             (org-entry-put (org-gtd--org-element-pom myelt) "TODO" "TODO")))
+         (org-entry-put (org-gtd--org-element-pom first-entry) "TODO" "NEXT")))
+
+     (defun org-gtd--org-element-pom (element)
+       "Return buffer position for start of Org ELEMENT."
+       (org-element-property :begin element))
+
+     (defun org-gtd--process-inbox-element ()
+       "With point on an item, choose which GTD action to take."
+       (let ((action
+              (read-multiple-choice
+               "What to do with this item?"
+               '((?q "quick" "quick item: < 2 minutes, done!")
+                 (?t "throw out" "this has no value to me")
+                 (?p "project" "multiple steps required to completion")
+                 (?c "calendar" "do this at a certain time")
+                 (?d "delegate it" "give it to someone")
+                 (?s "single action" "do this when possible")
+                 (?a "archive this knowledge" "Store this where you store knowledge")
+                 (?i "incubate it" "I'll come back to this later")))))
+         (cl-case (car action)
+           (?q (org-gtd--quick-action))
+           (?t (org-gtd--trash))
+           (?p (org-gtd--project))
+           (?c (org-gtd--calendar))
+           (?d (org-gtd--delegate))
+           (?s (org-gtd--single-action))
+           (?a (org-gtd--archive))
+           (?i (org-gtd--incubate)))))
+
+     (defun org-gtd--project ()
+       "Process GTD inbox item by transforming it into a project.
+     Allow the user apply user-defined tags from
+     `org-tag-persistent-alist', `org-tag-alist' or file-local tags in
+     the inbox.  Refile to `org-gtd-actionable-file-basename'."
+       (org-gtd--clarify-item)
+       (goto-char (point-min))
+       (org-set-tags-command)
+       (org-gtd--nextify)
+       (org-refile nil nil (org-gtd--refile-target org-gtd-projects))
+       (with-current-buffer (org-gtd--actionable-file)
+         (org-update-statistics-cookies t)))
+
+     (defun org-gtd--project-complete-p ()
+       "Return t if project complete, nil otherwise.
+     A project is considered complete when all its actions/tasks are
+     marked with a done `org-todo-keyword'."
+       (let ((entries (cdr (org-map-entries
+                            (lambda ()
+                              (org-entry-get
+                               (org-gtd--org-element-pom (org-element-at-point))
+                               "TODO"))
+                            t
+                            'tree))))
+         (seq-every-p (lambda (x) (string-equal x "DONE")) entries)))
+
+     (defun org-gtd--quick-action ()
+       "Process GTD inbox item by doing it now.
+     Allow the user apply user-defined tags from
+     `org-tag-persistent-alist', `org-tag-alist' or file-local tags in
+     the inbox.  Mark it as done and archive."
+       (org-gtd--clarify-item)
+       (goto-char (point-min))
+       (org-set-tags-command)
+       (org-todo "DONE")
+       (org-archive-subtree))
+
+     (defun org-gtd--refile-incubate ()
+       (setq user-refile-targets org-refile-targets)
+       (setq org-refile-targets `((,(nist/org-directory-file "incubate.org") :maxlevel . 2)))
+       (org-refile)
+       (setq org-refile-targets user-refile-targets))
+
+     (defun org-gtd--refile-target (heading-regexp)
+       "Filters refile targets generated from `org-gtd--refile-targets' using HEADING-REGEXP."
+       (let* ((org-refile-targets (org-gtd--refile-targets))
+              (results (cl-find-if
+                        (lambda (rfloc)
+                          (string-match heading-regexp
+                                        (car rfloc)))
+                        (org-refile-get-targets))))
+         results))
+
+     (defun org-gtd--refile-targets ()
+       "Return the refile targets specific to org-gtd."
+       (append (org-gtd--refile-incubate-targets) (org-gtd--refile-action-targets))
+       )
+
+     (defun org-gtd--refile-incubate-targets ()
+       `((,(nist/org-directory-file "incubate.org") :maxlevel . 2)))
+
+     (defun org-gtd--refile-action-targets ()
+       `((,(nist/org-directory-file "actionable.org") :maxlevel . 1)))
+
+     (defun org-gtd--single-action ()
+       "Process GTD inbox item as a single action.
+     Allow the user apply user-defined tags from
+     `org-tag-persistent-alist', `org-tag-alist' or file-local tags in
+     the inbox.  Set as a NEXT action and refile to
+     `org-gtd-actionable-file-basename'."
+       (org-gtd--clarify-item)
+       (goto-char (point-min))
+       (org-set-tags-command)
+       (org-todo "NEXT")
+       (org-refile nil nil (org-gtd--refile-target org-gtd-actions)))
+
+     (defun org-gtd--trash ()
+       "Mark GTD inbox item as cancelled and archive it."
+       (org-gtd--clarify-item)
+       (goto-char (point-min))
+       (org-set-tags-command)
+       (org-todo "CANCELED")
+       (org-archive-subtree))
+   #+END_SRC
+
 
 * Extensions
 ** =restclient=
